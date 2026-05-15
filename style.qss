@@ -1,0 +1,820 @@
+/*============== sidebar ==============*/
+
+#ali1,
+#ali2
+{
+    background: red;
+}
+
+#sidebar {
+    background-color: #0f172a;
+}
+#buttons {
+    border-bottom: 1px solid #334155;
+}
+#btnhome,
+#btnactions,
+#btnsale,
+#btnmed,
+#btnrep,
+#btnset,
+#btnpurch,
+#btnexit
+{
+    color: #fff;
+    background-color: transparent;
+    border: none;
+    text-align: right;
+    padding: 10px 15px;
+    margin: 5px 0;
+    border-radius: 10px;
+    font-size: 12px;
+}
+#btnhome:hover,
+#btnactions:hover,
+#btnsale:hover,
+#btnmed:hover,
+#btnrep:hover,
+#btnset:hover,
+#btnpurch:hover,
+#btnexit:hover
+{
+    background-color: #1e293b;
+}
+
+#btnhome:checked ,
+#btnactions:checked ,
+#btnsale:checked ,
+#btnmed:checked ,
+#btnrep:checked ,
+#btnset:checked ,
+#btnpurch:checked
+{
+    background-color: #14b8a6;
+    color: white;
+    font-weight: bold;
+}
+
+#btnexit:checked {
+    background-color: #1e293b;
+}
+#btnexit {
+    color: #ef4444;
+}
+#lbllogo {
+    padding-left: 10px;
+}
+#lblmain {
+    padding:  0px 10px;
+    font-weight: bold;
+    font-size: 16px;
+}
+#lable {
+   border-bottom: 1px solid #334155;
+}
+
+
+/*============== main layout ==============*/
+
+#stackedWidget {
+   background-color: #f8fafc;
+}
+#navhome,
+#navmed,
+#navactions,
+#navpurch
+{
+   background-color: #fff;
+   border-bottom: 1px solid #e2e8f0;
+}
+#homesales,
+#homereturns,
+#homeprescriptions,
+#homelow,
+#homewedgitlow,
+#midform,
+#midaddlast,
+#mideditlast,
+#actiondetails,
+#purchdetails,
+#purchbackcart,
+#purchbacktable
+{
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+#lblmid,
+#lblaction,
+#lblhome,
+#lblpurch
+{
+   font-size: 16px;
+   font-weight: bold;
+   color: black;
+}
+#btnmidadd,
+#btnmode,
+#btnhomeadd,
+#btnpurchadd
+{
+    padding: 9px;
+    background-color: #14b8a6;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 12px;
+}
+#btnmidadd:checked,
+#btnmode:checked,
+#btnhomeadd:checked
+{
+    font-weight: normal;
+}
+#btnmidadd:hover,
+#btnmode:hover,
+#btnhomeadd:hover
+{
+    background-color: #0d9488;
+}
+#btnmidadd:pressed,
+#btnmode:pressed,
+#btnhomeadd:pressed
+{
+    background-color: #0f766e;
+}
+#midsearch,
+#actionsearch,
+#homesearch,
+#purchsearch
+{
+   background-color: #ffffff;
+   color: black;
+   padding: 8px 10px;
+   border-radius: 10px;
+   border: 1px solid #e2e8f0;
+}
+#midsearch::placeholder,
+#actionsearch::placeholder,
+#homesearch::placeholder,
+#purchsearch::placeholder
+{
+    color: #9CA3AF;
+}
+#midsearch:focus,
+#actionsearch:focus,
+#homesearch:focus,
+#purchsearch:focus
+{
+    border: 2px solid #20c997;
+}
+
+#midtable,
+#hometable,
+#actiontable,
+#purchtable,
+#purchcart
+{
+    background-color: #ffffff;
+    border: none;
+    gridline-color: #f0f0f0;
+    font-size: 14px;
+    alternate-background-color: #fafafa;
+}
+
+#midtable::item,
+#hometable::item,
+#actiontable::item,
+#purchtable::item,
+#purchcart::item
+{
+    padding: 10px;
+    border-bottom: 1px solid #f2f2f2;
+}
+QHeaderView::section
+{
+    background-color: #F9FAFB;
+    color: #6c757d;
+    padding: 10px;
+    border: none;
+    border-bottom: 1px solid #eaeaea;
+    font-weight: 600;
+}
+
+#midbacktable,
+#hometablewid,
+#actiontablewid
+{
+   border-radius: 10px;
+   background-color: #F9FAFB;
+   border: 1px solid #e2e8f0;
+}
+
+/* ===== ScrollBar Vertical ===== */
+QScrollBar:vertical {
+    background: transparent;
+    width: 6px;
+}
+
+QScrollBar::handle:vertical {
+    background: #14b8a6;
+    border-radius: 3px;
+    min-height: 40px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #0d9488;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+QScrollBar::add-page:vertical,
+QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+QScrollBar:horizontal {
+    background: transparent;
+    height: 6px;
+}
+
+QScrollBar::handle:horizontal {
+    background: transparent;
+    border-radius: 3px;
+    min-width: 40px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: #0d9488;
+}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    width: 0px;
+}
+
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal {
+    background: none;
+}
+
+/*============== home Page ==============*/
+
+#homeicon
+{
+    background: #D6F7F3;
+    border-radius: 10px;
+}
+
+#homelblsales,
+#homelblreturn,
+#homelblprescript
+{
+    font-size: 13px;
+    color: #6B7280;
+}
+
+#homesaledetails,
+#homereturndetails,
+#homeprescriptdetails
+{
+    color: #6B7280;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+#homesalevalue,
+#homereturnvalue,
+#homeprescriptvalue
+{
+    color: black;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+#homelbllow,
+#homelowvalue,
+#homelowdetails
+{
+    font-size: 13px;
+    color: #F56565;
+}
+
+#homelowvalue
+{
+    font-size: 22px;
+    font-weight: bold;
+}
+#homelowdetails
+{
+    font-size: 11px;
+    font-weight: bold;
+}
+
+
+
+#homesaleicon
+{
+    background: #F0F9FF;
+    border-radius: 10px;
+}
+
+#homereturnicon
+{
+    background: #FFFBEB;
+    border-radius: 10px;
+}
+
+#homeprescripticon
+{
+    background: #FAF5FF;
+    border-radius: 10px;
+}
+
+#homelow
+{
+    background-color: #FEF2F2;
+    border-radius: 10px;
+    border: 1px solid #FECACA;
+}
+
+#homelowicon
+{
+    background: #FED7D7;
+    border-radius: 10px;
+}
+
+#hometablebtnall,
+#hometablebtnsale,
+#hometablebtnreturn
+{
+    background: #F8FAFC;
+    color: #64748B;
+    border: 1px solid #CBD5E1;
+    border-radius: 10px;
+}
+
+#hometablebtnall:hover,
+#hometablebtnsale:hover,
+#hometablebtnreturn:hover
+{
+    background: #E2E8F0;
+}
+
+#hometablebtnall:checked,
+#hometablebtnsale:checked,
+#hometablebtnreturn:checked
+{
+    background-color: #14b8a6;
+    color: white;
+    font-weight: bold;
+}
+
+#hometablebtnsale,
+#hometablebtnreturn
+{
+    padding-bottom: 5px;
+}
+
+#homelbltable
+{
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+
+/*============== medicine Page ==============*/
+
+#midicon,
+#purchicon
+{
+   background-color: #F3E8FF;
+   border-radius: 10px;
+}
+#name,
+#barcode,
+#category,
+#min_quantity,
+#sale_price,
+#purchvaluesupplier
+{
+    background-color: #f5f7fa;
+    color: #333;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid #dcdfe6;
+}
+
+#name:focus,
+#barcode:focus,
+#category:focus,
+#min_quantity:focus,
+#sale_price:focus,
+#purchvaluesupplier:focus
+{
+    border: 2px solid #20c997;
+    background-color: #ffffff;
+}
+
+#midlblname,
+#midlblbarcode,
+#midlblcategory,
+#midlblmin_quantity,
+#midlblsale_price
+{
+    color: #6c757d;
+}
+
+#midlbl
+{
+    border-bottom: 1px solid #e2e8f0;
+}
+
+#midlblform,
+#midlbltable,
+#purchlbldetails,
+#purchlblcart,
+#purchlbltable,
+#actionlbltable,
+#actionlbldetails
+{
+    color: black;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+#purchlblcart,
+#purchlbltable
+{
+    color: black;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+#midmode
+{
+    background: #D1FAE5;
+    color: #065F46;
+    border-radius: 10px;
+    padding: 5px 8px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+#midsave
+{
+    border-radius: 10px;
+    background: #14b8a6;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 12px;
+}
+#midsave:hover {
+    background-color: #0d9488;
+}
+#midsave:pressed {
+    background-color: #0f766e;
+}
+
+#midcancel
+{
+    border-radius: 10px;
+    background: #F1F5F9;
+    color: #64748B;
+    font-size: 12px;
+    padding: 12px;
+}
+#midcancel:hover {
+    background-color: #E2E8F0;
+}
+#midcancel:pressed {
+    background-color: #c7c9ce;
+}
+#midcancel:checked {
+    font-weight: normal;
+}
+
+#midedit,
+#middelete
+{
+    border: none;
+    background-color: transparent;
+    text-align: center;
+}
+
+#midtotal
+{
+
+    background-color: white;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+
+}
+#midlbltotal
+{
+    color: #6B7280;
+    font-size: 13px;
+}
+#totalvalue
+{
+    color: #000;
+}
+
+#midavailable
+{
+    background-color: #F7FEFA;
+    border-radius: 10px;
+    border: 1px solid #BBF7D0;
+
+}
+#midlblavailable
+{
+    color: #22C55E;
+    font-size: 13px;
+}
+#availablevalue
+{
+    color: #22C55E;
+}
+
+#midlow
+{
+    background-color: #FFFDF5;
+    border-radius: 10px;
+    border: 1px solid #FEF08A;
+
+}
+#midlbllow
+{
+    color: #D4A80A;
+    font-size: 13px;
+}
+#lowvalue
+{
+    color: #FACC15;
+}
+
+
+#midexpire
+{
+    background: #FEF2F2;
+    border-radius: 10px;
+    border: 1px solid #FECACA;
+}
+#midlblexpired
+{
+    color: #F56565;
+    font-size: 13px;
+}
+#expiredvalue
+{
+    color: #F56565;
+}
+
+#midlblworning
+{
+    background: #FED7D7;
+    color: #EF4444;
+    border-radius: 10px;
+    padding: 5px 8px;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+#totalvalue,
+#availablevalue,
+#lowvalue,
+#expiredvalue
+{
+    border: none;
+    background-color: transparent;
+    text-align: right;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+
+#btn
+{
+    background: red;
+}
+
+/*============== transaction Page ==============*/
+
+#actionicon
+{
+    background: #E0F2FE;
+    border-radius: 10px;
+}
+
+#actionmode
+{
+    background: #D1FAE5;
+    color: #065F46;
+    border-radius: 10px;
+    padding: 5px 8px;
+    font-size: 10px;
+    font-weight: bold;
+    margin: 15px;
+}
+
+#actionvaluesale,
+#actiondatesale,
+#actionvaluereturn,
+#actiondatereturn,
+#actionvalequantity,
+#purchvalueinv,
+#purchvaluedate,
+#purchvaluequantity,
+#purchlblquantity
+{
+    color: #64748B;
+    font-size: 12px;
+}
+
+#actionnumsale,
+#actionlbldatesale,
+#actionnumreturn,
+#actionlbldatereturn,
+#actionquantity,
+#purchnuminv,
+#purchdate,
+#purchquantity,
+#purchsupplier
+{
+    color: #0F172A;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+#actionpay,
+#purchpay
+{
+    color: #0F172A;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+#actionvaluesubtotal,
+#actionvaluetax
+{
+    color: #0F172A;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#actionvaluetotal,
+#purchvaluetotal
+{
+    color: #14b8a6;
+    font-size: 20px;
+    font-weight: bold;
+}
+#actionpoundtotal,
+#purchpoundtotal
+{
+    color: #14b8a6;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+#actionsubtotal,
+#actiontax,
+#actiontotal,
+#actionpoundsubtotal,
+#actionpoundtax,
+#purchtotal
+{
+    color: #64748B;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+#actionbtncash,
+#actionbtnvisa,
+#purchbtncash,
+#purchbtnvisa
+{
+    background: #F8FAFC;
+    color: #64748B;
+    border: 2px solid #DCE3EA;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 13px 10px;
+    border-radius: 10px;
+}
+
+#actionbtncash:hover,
+#actionbtnvisa:hover,
+#purchbtncash:hover,
+#purchbtnvisa:hover
+{
+    background: #E2E8F0;
+}
+
+#actionbtncash:checked,
+#actionbtnvisa:checked,
+#purchbtncash:checked,
+#purchbtnvisa:checked
+{
+    background-color: #14b8a6;
+    border: 2px solid #14b8a6;
+    color: white;
+}
+
+#actionbtndone,
+#purchbtndone
+{
+    background: #14b8a6;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 2px;
+}
+
+#actionbtndone:hover,
+#purchbtndone:hover
+{
+    background-color: #0d9488;
+}
+
+#actionbtndone:pressed,
+#purchbtndone:pressed
+{
+    background-color: #0f766e;
+}
+
+#actionbtncancel,
+#purchbtncancel
+{
+    background: #F1F5F9;
+    color: #64748B;
+    font-size: 12px;
+    padding: 12px;
+    border-radius: 10px;
+}
+#actionbtncancel:hover,
+#purchbtncancel:hover
+{
+    background-color: #E2E8F0;
+}
+#actionbtncancel:pressed,
+#purchbtncancel:pressed
+{
+    background-color: #c7c9ce;
+}
+#actionbtncancel:checked,
+#purchbtncancel:checked
+{
+    font-weight: normal;
+}
+
+#actiondetailstax,
+#purchlbldet,
+#widget_10
+{
+    border-bottom: 1px solid #F1F5F9;
+}
+
+#actiondetails1,
+#actiondetails2,
+#purchlbltotal
+{
+    border-bottom: 1px solid #e2e8f0;
+}
+
+QListView {
+    background-color: #ffffff;
+    border: 2px solid #14b8a6;
+    border-radius: 8px;
+    padding: 2px;
+    outline: 0;
+}
+
+QListView::item {
+    background-color: #f5f7fa;
+    padding: 6px 12px;
+    margin: 2px 6px;
+    border-radius: 8px;
+    color: #64748B;
+}
+
+QListView::item:hover {
+    background-color: #eefaf6;
+}
+
+
+QPushButton {
+    outline: none;
+}
+
+
