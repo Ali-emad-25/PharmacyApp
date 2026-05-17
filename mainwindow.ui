@@ -1036,7 +1036,11 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QTableView" name="purchtable"/>
+                  <widget class="QTableView" name="purchtable">
+                   <property name="layoutDirection">
+                    <enum>Qt::LayoutDirection::RightToLeft</enum>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </widget>

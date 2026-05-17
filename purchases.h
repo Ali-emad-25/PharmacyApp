@@ -5,7 +5,14 @@
 #include <QList>
 #include <QMap>
 #include <QPair>
+#include <qdatetime.h>
 
+struct CartItem {
+    int qty = 1;
+    double purchasePrice;
+    double salePrice;
+    QDate expiryDate;
+};
 
 class Purchases
 {
@@ -39,25 +46,13 @@ public:
         QString invoiceNo,
         QString date,
         QString supplier,
-        double total,
         QString paymentMethod,
-        const QMap<int, int> &cart
+        const QMap<int, CartItem> &cart
         );
-
-    static int saveReturnInvoice(
-        QString returnInvoiceNo,
-        int originalInvoiceId,
-        QString date,
-        QString supplier,
-        double total,
-        const QMap<int, QPair<int, QString>> &returnCart
-        );
-
-    static bool deleteInvoice(int invoiceId);
 
     static QList<Purchases> getAll();
 
-    static QList<Purchases> search(const QString &text);
+    static bool deleteInvoice(int invoiceId);
 
     // ================= GETTERS =================
     int getId() const;
@@ -74,9 +69,8 @@ public:
 
     QString getPaymentMethod() const;
 
-    static QMap<int, int> getInvoiceItems(int invoiceId);
+    int getItemsCount() const;
 
-    static int getAlreadyReturnedQty(int invoiceId, int medicineId);
 };
 
 #endif

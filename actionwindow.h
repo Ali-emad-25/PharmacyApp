@@ -46,7 +46,6 @@ private:
     QMap<int, int> cart;
 
     QString invoiceNumber;
-    QString invoiceDate;
     bool invoiceStarted = false;
 
     void updateTotals();
