@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>998</width>
-    <height>541</height>
+    <width>1011</width>
+    <height>605</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -92,7 +92,7 @@
             <number>20</number>
            </property>
            <item>
-            <widget class="QPushButton" name="btnpurchadd">
+            <widget class="QPushButton" name="purchbtnmode">
              <property name="minimumSize">
               <size>
                <width>120</width>
@@ -105,8 +105,18 @@
                <height>16777215</height>
               </size>
              </property>
+             <property name="layoutDirection">
+              <enum>Qt::LayoutDirection::RightToLeft</enum>
+             </property>
              <property name="text">
-              <string>PushButton</string>
+              <string>إضافة مرتجع</string>
+             </property>
+             <property name="icon">
+              <iconset>
+               <normaloff>icons/refresh2.svg</normaloff>icons/refresh2.svg</iconset>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -239,7 +249,7 @@
                <height>16777215</height>
               </size>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_35">
+             <layout class="QVBoxLayout" name="verticalLayout_18">
               <property name="spacing">
                <number>6</number>
               </property>
@@ -253,7 +263,7 @@
                <number>15</number>
               </property>
               <property name="bottomMargin">
-               <number>10</number>
+               <number>15</number>
               </property>
               <item>
                <widget class="QWidget" name="widget_44" native="true">
@@ -270,31 +280,21 @@
                  </size>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_32">
-                 <property name="leftMargin">
+                 <property name="spacing">
                   <number>0</number>
                  </property>
+                 <property name="leftMargin">
+                  <number>6</number>
+                 </property>
                  <property name="topMargin">
-                  <number>0</number>
+                  <number>6</number>
                  </property>
                  <property name="rightMargin">
                   <number>0</number>
                  </property>
                  <property name="bottomMargin">
-                  <number>0</number>
+                  <number>6</number>
                  </property>
-                 <item>
-                  <spacer name="horizontalSpacer_24">
-                   <property name="orientation">
-                    <enum>Qt::Orientation::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>199</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
                  <item>
                   <widget class="QLabel" name="purchlbldetails">
                    <property name="text">
@@ -306,10 +306,10 @@
                </widget>
               </item>
               <item>
-               <widget class="QWidget" name="purchlbldet" native="true">
-                <layout class="QVBoxLayout" name="verticalLayout_19">
+               <widget class="QWidget" name="widget_50" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_34">
                  <property name="spacing">
-                  <number>6</number>
+                  <number>0</number>
                  </property>
                  <property name="leftMargin">
                   <number>0</number>
@@ -321,117 +321,212 @@
                   <number>0</number>
                  </property>
                  <property name="bottomMargin">
-                  <number>15</number>
+                  <number>10</number>
                  </property>
                  <item>
-                  <widget class="QWidget" name="widget_45" native="true">
+                  <widget class="QWidget" name="widget_37" native="true">
                    <layout class="QHBoxLayout" name="horizontalLayout_33">
                     <property name="spacing">
-                     <number>10</number>
+                     <number>0</number>
                     </property>
                     <property name="leftMargin">
                      <number>0</number>
                     </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
                     <property name="rightMargin">
-                     <number>6</number>
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
                     </property>
                     <item>
-                     <spacer name="horizontalSpacer_25">
-                      <property name="orientation">
-                       <enum>Qt::Orientation::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="purchvalueinv">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="layoutDirection">
-                       <enum>Qt::LayoutDirection::RightToLeft</enum>
-                      </property>
-                      <property name="text">
-                       <string>0</string>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
-                      </property>
+                     <widget class="QWidget" name="purchwidgetnum" native="true">
+                      <layout class="QHBoxLayout" name="horizontalLayout_49">
+                       <property name="spacing">
+                        <number>10</number>
+                       </property>
+                       <item>
+                        <widget class="QLabel" name="purchvaluereturn">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="layoutDirection">
+                          <enum>Qt::LayoutDirection::LeftToRight</enum>
+                         </property>
+                         <property name="text">
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="purchnumreturn">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>رقم فاتورة المرتجع :</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="purchnuminv">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>رقم فاتورة الشراء :</string>
-                      </property>
+                     <widget class="QWidget" name="widget_45" native="true">
+                      <layout class="QHBoxLayout" name="horizontalLayout_48">
+                       <property name="spacing">
+                        <number>10</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>6</number>
+                       </property>
+                       <item>
+                        <widget class="QLabel" name="purchvalueinv">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="layoutDirection">
+                          <enum>Qt::LayoutDirection::LeftToRight</enum>
+                         </property>
+                         <property name="text">
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="purchnuminv">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>رقم فاتورة الشراء :</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
                      </widget>
                     </item>
                    </layout>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QWidget" name="widget_46" native="true">
-                   <layout class="QHBoxLayout" name="horizontalLayout_42">
+                  <widget class="QWidget" name="widget_48" native="true">
+                   <layout class="QHBoxLayout" name="horizontalLayout_47">
                     <property name="spacing">
-                     <number>10</number>
+                     <number>0</number>
                     </property>
                     <property name="leftMargin">
                      <number>0</number>
                     </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
                     <property name="rightMargin">
-                     <number>6</number>
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
                     </property>
                     <item>
-                     <spacer name="horizontalSpacer_26">
-                      <property name="orientation">
-                       <enum>Qt::Orientation::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="purchvaluedate">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>2026-5-15</string>
-                      </property>
+                     <widget class="QWidget" name="purchwidgetdate" native="true">
+                      <layout class="QHBoxLayout" name="horizontalLayout_50">
+                       <property name="spacing">
+                        <number>10</number>
+                       </property>
+                       <item>
+                        <widget class="QLabel" name="purchvaluedatereturn">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="purchdatereturn">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>تاريخ المرتجع :</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="purchdate">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>تاريخ الشراء :</string>
-                      </property>
+                     <widget class="QWidget" name="widget_46" native="true">
+                      <layout class="QHBoxLayout" name="horizontalLayout_42">
+                       <property name="spacing">
+                        <number>10</number>
+                       </property>
+                       <property name="leftMargin">
+                        <number>6</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>6</number>
+                       </property>
+                       <item>
+                        <widget class="QLabel" name="purchvaluedate">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="purchdate">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="text">
+                          <string>تاريخ الشراء :</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
                      </widget>
                     </item>
                    </layout>
@@ -450,48 +545,88 @@
                      <number>0</number>
                     </property>
                     <property name="rightMargin">
-                     <number>6</number>
+                     <number>0</number>
                     </property>
                     <property name="bottomMargin">
                      <number>0</number>
                     </property>
                     <item>
                      <widget class="QWidget" name="widget_7" native="true">
-                      <layout class="QHBoxLayout" name="horizontalLayout_45">
+                      <layout class="QHBoxLayout" name="horizontalLayout_51">
+                       <property name="spacing">
+                        <number>10</number>
+                       </property>
                        <property name="leftMargin">
-                        <number>0</number>
+                        <number>6</number>
                        </property>
-                       <property name="rightMargin">
-                        <number>0</number>
+                       <property name="topMargin">
+                        <number>6</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>6</number>
                        </property>
                        <item>
-                        <spacer name="horizontalSpacer_27">
-                         <property name="orientation">
-                          <enum>Qt::Orientation::Horizontal</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>40</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="purchlblquantity">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="text">
-                          <string>اصناف</string>
-                         </property>
+                        <widget class="QWidget" name="widget_53" native="true">
+                         <layout class="QHBoxLayout" name="horizontalLayout_45">
+                          <property name="spacing">
+                           <number>6</number>
+                          </property>
+                          <property name="leftMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="topMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="rightMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="bottomMargin">
+                           <number>0</number>
+                          </property>
+                          <item>
+                           <spacer name="horizontalSpacer_24">
+                            <property name="orientation">
+                             <enum>Qt::Orientation::Horizontal</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>40</width>
+                              <height>20</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                          <item>
+                           <widget class="QLabel" name="purchlblquantity">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="text">
+                             <string>اصناف</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QLabel" name="purchvaluequantity">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="text">
+                             <string>0</string>
+                            </property>
+                           </widget>
+                          </item>
+                         </layout>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLabel" name="purchvaluequantity">
+                        <widget class="QLabel" name="purchquantity">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                            <horstretch>0</horstretch>
@@ -499,62 +634,49 @@
                           </sizepolicy>
                          </property>
                          <property name="text">
-                          <string>0</string>
+                          <string>اجمالي الاصناف :</string>
                          </property>
                         </widget>
                        </item>
                       </layout>
                      </widget>
                     </item>
-                    <item>
-                     <widget class="QLabel" name="purchquantity">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>اجمالي الاصناف :</string>
-                      </property>
-                     </widget>
-                    </item>
                    </layout>
                   </widget>
                  </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="purchlbldet" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_19">
+                 <property name="spacing">
+                  <number>10</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>6</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>6</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>15</number>
+                 </property>
                  <item>
-                  <widget class="QWidget" name="widget_51" native="true">
-                   <layout class="QVBoxLayout" name="verticalLayout_18">
-                    <property name="spacing">
-                     <number>14</number>
-                    </property>
-                    <property name="leftMargin">
-                     <number>6</number>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>6</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
-                     <widget class="QLabel" name="purchsupplier">
-                      <property name="text">
-                       <string>المورد</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="purchvaluesupplier">
-                      <property name="placeholderText">
-                       <string>اكتب اسم المورد</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
+                  <widget class="QLabel" name="purchsupplier">
+                   <property name="text">
+                    <string>المورد</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="purchvaluesupplier">
+                   <property name="placeholderText">
+                    <string>اكتب اسم المورد</string>
+                   </property>
                   </widget>
                  </item>
                 </layout>
@@ -565,24 +687,27 @@
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>50</height>
+                  <height>0</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
                   <width>16777215</width>
-                  <height>50</height>
+                  <height>16777215</height>
                  </size>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_15">
                  <property name="leftMargin">
                   <number>6</number>
                  </property>
+                 <property name="topMargin">
+                  <number>6</number>
+                 </property>
                  <property name="rightMargin">
                   <number>6</number>
                  </property>
                  <property name="bottomMargin">
-                  <number>20</number>
+                  <number>18</number>
                  </property>
                  <item>
                   <widget class="QLabel" name="purchpoundtotal">
@@ -666,8 +791,15 @@
                     </property>
                     <item>
                      <widget class="QPushButton" name="purchbtnvisa">
+                      <property name="layoutDirection">
+                       <enum>Qt::LayoutDirection::RightToLeft</enum>
+                      </property>
                       <property name="text">
                        <string>تحويل</string>
+                      </property>
+                      <property name="icon">
+                       <iconset>
+                        <normaloff>icons/credit-card3.svg</normaloff>icons/credit-card3.svg</iconset>
                       </property>
                       <property name="checkable">
                        <bool>true</bool>
@@ -676,8 +808,15 @@
                     </item>
                     <item>
                      <widget class="QPushButton" name="purchbtncash">
+                      <property name="layoutDirection">
+                       <enum>Qt::LayoutDirection::RightToLeft</enum>
+                      </property>
                       <property name="text">
                        <string>نقدا</string>
+                      </property>
+                      <property name="icon">
+                       <iconset>
+                        <normaloff>icons/cash2.svg</normaloff>icons/cash2.svg</iconset>
                       </property>
                       <property name="checkable">
                        <bool>true</bool>
@@ -751,6 +890,12 @@
               </property>
               <item>
                <widget class="QWidget" name="purchbackcart" native="true">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>350</height>
+                 </size>
+                </property>
                 <property name="maximumSize">
                  <size>
                   <width>16777215</width>
@@ -765,7 +910,7 @@
                   <number>2</number>
                  </property>
                  <property name="topMargin">
-                  <number>6</number>
+                  <number>0</number>
                  </property>
                  <property name="rightMargin">
                   <number>2</number>
@@ -782,9 +927,28 @@
                     </size>
                    </property>
                    <layout class="QHBoxLayout" name="horizontalLayout_14">
+                    <property name="leftMargin">
+                     <number>20</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>20</number>
+                    </property>
                     <property name="rightMargin">
                      <number>20</number>
                     </property>
+                    <item>
+                     <widget class="QLabel" name="purchmode">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>وضع الشراء</string>
+                      </property>
+                     </widget>
+                    </item>
                     <item>
                      <spacer name="horizontalSpacer_21">
                       <property name="orientation">
@@ -809,7 +973,11 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QTableView" name="purchcart"/>
+                  <widget class="QTableView" name="purchcart">
+                   <property name="layoutDirection">
+                    <enum>Qt::LayoutDirection::RightToLeft</enum>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </widget>
@@ -1091,21 +1259,15 @@
                <height>16777215</height>
               </size>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_26">
-              <property name="spacing">
-               <number>0</number>
-              </property>
+             <layout class="QVBoxLayout" name="verticalLayout_29">
               <property name="leftMargin">
                <number>15</number>
-              </property>
-              <property name="topMargin">
-               <number>6</number>
               </property>
               <property name="rightMargin">
                <number>15</number>
               </property>
               <property name="bottomMargin">
-               <number>0</number>
+               <number>10</number>
               </property>
               <item>
                <widget class="QWidget" name="widget_26" native="true">
@@ -1122,6 +1284,9 @@
                  </size>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_28">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
                  <property name="topMargin">
                   <number>6</number>
                  </property>
@@ -1550,13 +1715,7 @@
               </item>
               <item>
                <widget class="QWidget" name="widget_29" native="true">
-                <layout class="QVBoxLayout" name="verticalLayout_29">
-                 <property name="topMargin">
-                  <number>25</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>10</number>
-                 </property>
+                <layout class="QVBoxLayout" name="verticalLayout_35">
                  <item>
                   <widget class="QLabel" name="actionpay">
                    <property name="text">
@@ -1574,13 +1733,13 @@
                      <number>0</number>
                     </property>
                     <property name="topMargin">
-                     <number>8</number>
+                     <number>0</number>
                     </property>
                     <property name="rightMargin">
                      <number>0</number>
                     </property>
                     <property name="bottomMargin">
-                     <number>10</number>
+                     <number>0</number>
                     </property>
                     <item>
                      <widget class="QPushButton" name="actionbtnvisa">
@@ -1622,6 +1781,24 @@
                    </layout>
                   </widget>
                  </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="widget_51" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_26">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>6</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
                  <item>
                   <widget class="QPushButton" name="actionbtndone">
                    <property name="layoutDirection">
@@ -1714,10 +1891,10 @@
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_27">
                  <property name="leftMargin">
-                  <number>6</number>
+                  <number>20</number>
                  </property>
                  <property name="topMargin">
-                  <number>6</number>
+                  <number>20</number>
                  </property>
                  <property name="rightMargin">
                   <number>20</number>

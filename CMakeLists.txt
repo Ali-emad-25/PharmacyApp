@@ -24,6 +24,8 @@ qt_add_executable(PharmacyApp
     homewindow.h
     purchaseswindow.cpp
     purchaseswindow.h
+    purchases.h
+    purchases.cpp
 
 
 

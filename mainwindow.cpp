@@ -203,6 +203,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->hometable->setStyleSheet("border: none;");
     ui->actiontable->setStyleSheet("border: none;");
+    ui->purchcart->setStyleSheet("border: none;");
+    ui->purchtable->setStyleSheet("border: none;");
 
     loadData();
     // updateStats();
@@ -265,7 +267,7 @@ void MainWindow::on_midsave_clicked()
     //     return;
     // }
 
-    Medicine m(currentId,name,category,sale_price,min_quantity,barcode);
+    Medicine m(currentId,name,category,0,sale_price,min_quantity,barcode);
 
     bool success;
 
@@ -288,6 +290,7 @@ void MainWindow::on_midsave_clicked()
         } else {
             actionCtrl->loadData();
         }
+        purchasesCtrl->refreshCompleter(purchasesCtrl->isReturnMode);;
         // ui->pagesmid->setCurrentWidget(ui->pageveiwsmid);
         // ui->btnmidadd->setChecked(false);
 

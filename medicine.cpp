@@ -6,12 +6,13 @@
 
 Medicine::Medicine() {}
 
-Medicine::Medicine(int id, QString name, QString category,
+Medicine::Medicine(int id, QString name, QString category, int quantity,
                    double sale_price, int min_quantity,QString barcode)
 {
     this->id = id;
     this->name = name;
     this->category = category;
+    this->quantity = quantity;
     this->sale_price = sale_price;
     this->min_quantity = min_quantity;
     this->barcode = barcode;
@@ -29,9 +30,9 @@ bool Medicine::add()
 
     QSqlQuery q(Database::instance());
     q.prepare(R"(
-        INSERT INTO medicines
-        (name, category, sale_price, min_quantity, barcode)
-        VALUES (?, ?, ?, ?, ?)
+    INSERT INTO medicines
+    (name, category, quantity, sale_price, min_quantity, barcode)
+    VALUES (?, ?, 0, ?, ?, ?)
     )");
 
     q.addBindValue(name);
@@ -57,13 +58,12 @@ bool Medicine::update()
     QSqlQuery q(Database::instance());
     q.prepare(R"(
         UPDATE medicines SET
-        name=?, category=?, sale_price=?,
+        name=?, sale_price=?,
         min_quantity=?, barcode=?
         WHERE id=?
     )");
 
     q.addBindValue(name);
-    q.addBindValue(category);
     q.addBindValue(sale_price);
     q.addBindValue(min_quantity);
     q.addBindValue(barcode);
@@ -79,9 +79,10 @@ static Medicine toMedicine(QSqlQuery &q)
         q.value(0).toInt(),
         q.value(1).toString(),
         q.value(2).toString(),
-        q.value(3).toDouble(),
-        q.value(4).toInt(),
-        q.value(5).toString()
+        q.value(3).toInt(),
+        q.value(4).toDouble(),
+        q.value(5).toInt(),
+        q.value(6).toString()
         );
 }
 
@@ -195,6 +196,7 @@ QList<Medicine> Medicine::search(const QString &text)
 
 QString Medicine::getName() const { return name; }
 QString Medicine::getCategory() const { return category; }
+int Medicine::getQuantity() const { return quantity; }
 QString Medicine::getBarcode() const { return barcode; }
 double Medicine::getSalePrice() const { return sale_price; }
 int Medicine::getId() const { return id; }

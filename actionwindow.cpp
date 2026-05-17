@@ -591,8 +591,8 @@ QLineEdit {
                     //                          "الكمية غير متاحة",
                     //                          "الحد الأقصى المتاح هو: " + QString::number(maxQty));
 
-                    //     // qty = maxQty;
-                    //     // qtyEdit->setText(QString::number(maxQty));
+                    //     qty = maxQty;
+                    //     qtyEdit->setText(QString::number(maxQty));
                     // }
 
                     // ================= UPDATE CART =================

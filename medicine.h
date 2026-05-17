@@ -11,13 +11,14 @@ private:
     int id;
     QString name;
     QString category;
+    int quantity;
     double sale_price;
     int min_quantity;
     QString barcode;
 
 public:
     Medicine();
-    Medicine(int id, QString name, QString category,
+    Medicine(int id, QString name, QString category, int quantity,
              double sale_price ,int min_quantity, QString barcode);
 
     bool add();
@@ -39,6 +40,7 @@ public:
 
     QString getName() const;
     QString getCategory() const;
+    int getQuantity() const;
     QString getBarcode() const;
     double getSalePrice() const;
     int getId() const;

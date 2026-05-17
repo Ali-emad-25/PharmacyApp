@@ -96,9 +96,7 @@
 #midaddlast,
 #mideditlast,
 #actiondetails,
-#purchdetails,
-#purchbackcart,
-#purchbacktable
+#purchdetails
 {
     background-color: white;
     border-radius: 10px;
@@ -117,7 +115,7 @@
 #btnmidadd,
 #btnmode,
 #btnhomeadd,
-#btnpurchadd
+#purchbtnmode
 {
     padding: 9px;
     background-color: #14b8a6;
@@ -128,19 +126,22 @@
 }
 #btnmidadd:checked,
 #btnmode:checked,
-#btnhomeadd:checked
+#btnhomeadd:checked,
+#purchbtnmode:checked
 {
     font-weight: normal;
 }
 #btnmidadd:hover,
 #btnmode:hover,
-#btnhomeadd:hover
+#btnhomeadd:hover,
+#purchbtnmode:hover
 {
     background-color: #0d9488;
 }
 #btnmidadd:pressed,
 #btnmode:pressed,
-#btnhomeadd:pressed
+#btnhomeadd:pressed,
+purchbtnmode:pressed
 {
     background-color: #0f766e;
 }
@@ -204,7 +205,9 @@ QHeaderView::section
 
 #midbacktable,
 #hometablewid,
-#actiontablewid
+#actiontablewid,
+#purchbackcart,
+#purchbacktable
 {
    border-radius: 10px;
    background-color: #F9FAFB;
@@ -614,7 +617,8 @@ QScrollBar::sub-page:horizontal {
     border-radius: 10px;
 }
 
-#actionmode
+#actionmode,
+#purchmode
 {
     background: #D1FAE5;
     color: #065F46;
@@ -622,7 +626,6 @@ QScrollBar::sub-page:horizontal {
     padding: 5px 8px;
     font-size: 10px;
     font-weight: bold;
-    margin: 15px;
 }
 
 #actionvaluesale,
@@ -632,8 +635,10 @@ QScrollBar::sub-page:horizontal {
 #actionvalequantity,
 #purchvalueinv,
 #purchvaluedate,
+#purchvaluedatereturn,
 #purchvaluequantity,
-#purchlblquantity
+#purchlblquantity,
+#purchvaluereturn
 {
     color: #64748B;
     font-size: 12px;
@@ -646,6 +651,8 @@ QScrollBar::sub-page:horizontal {
 #actionquantity,
 #purchnuminv,
 #purchdate,
+#purchdatereturn,
+#purchnumreturn,
 #purchquantity,
 #purchsupplier
 {
@@ -670,17 +677,30 @@ QScrollBar::sub-page:horizontal {
     font-weight: bold;
 }
 
-#actionvaluetotal,
-#purchvaluetotal
+#actionvaluetotal
 {
     color: #14b8a6;
     font-size: 20px;
     font-weight: bold;
 }
-#actionpoundtotal,
-#purchpoundtotal
+#actionpoundtotal
 {
     color: #14b8a6;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+
+#purchvaluetotal
+{
+    color: #ef5555;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#purchpoundtotal
+{
+    color: #ef5555;
     font-size: 12px;
     font-weight: bold;
 }

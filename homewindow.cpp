@@ -30,29 +30,16 @@ homewindow::homewindow(Ui::MainWindow *ui)
     ui->hometable->setModel(model);
 
     ui->hometable->setAlternatingRowColors(true);
-    ui->hometable->setShowGrid(false);
-    ui->hometable->setFrameShape(QFrame::NoFrame);
     ui->hometable->verticalHeader()->setVisible(false);
-
-    ui->hometable->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->hometable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->hometable->setSelectionMode(QAbstractItemView::NoSelection);
-    ui->hometable->setFocusPolicy(Qt::NoFocus);
-
     ui->hometable->setTextElideMode(Qt::ElideRight);
-
     ui->hometable->verticalHeader()->setDefaultSectionSize(45);
-    ui->hometable->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-
-    auto header = ui->hometable->horizontalHeader();
-    header->setDefaultAlignment(Qt::AlignCenter);
-
-    header->setSectionResizeMode(0, QHeaderView::Stretch);
-    header->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-    header->setSectionResizeMode(2, QHeaderView::ResizeToContents);
-    header->setSectionResizeMode(3, QHeaderView::ResizeToContents);
-    header->setSectionResizeMode(4, QHeaderView::ResizeToContents);
-    header->setSectionResizeMode(5, QHeaderView::ResizeToContents);
+    ui->hometable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->hometable->setShowGrid(false);
+    ui->hometable->setFocusPolicy(Qt::NoFocus);
+    ui->hometable->setFrameShape(QFrame::NoFrame);
+    ui->hometable->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter);
+    ui->hometable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     // ===== Scroll =====
     ui->hometable->horizontalScrollBar()->setCursor(Qt::PointingHandCursor);
