@@ -114,6 +114,7 @@ void Database::createTables()
             medicine_id INTEGER NOT NULL,
 
             quantity INTEGER NOT NULL,
+            used_qty INTEGER DEFAULT 0,
             returned_qty INTEGER DEFAULT 0,
             purchase_price REAL NOT NULL,
             expiry_date TEXT NOT NULL,

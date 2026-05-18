@@ -46,7 +46,7 @@ int Action::saveInvoice(
 {
     QSqlDatabase db = Database::instance();
 
-    if(!db.transaction())
+    if (!db.transaction())
         return -1;
 
     QSqlQuery q(db);
@@ -64,57 +64,56 @@ int Action::saveInvoice(
     q.addBindValue(total);
     q.addBindValue(paymentMethod);
 
-    if(!q.exec())
+    if (!q.exec())
     {
-        qDebug() << "SQL ERROR:" << q.lastError().text();
         db.rollback();
         return -1;
     }
 
     int invoiceId = q.lastInsertId().toInt();
 
+    // 🔥 لكل دواء
     for (auto it = cart.begin(); it != cart.end(); ++it)
     {
         int medicineId = it.key();
         int qty = it.value();
 
-        Medicine m = Medicine::getById(medicineId);
+        auto batches = deductFEFO(db, medicineId, qty);
 
-        QSqlQuery iq(db);
-
-        iq.prepare(R"(
-        INSERT INTO invoice_items
-        (invoice_id, medicine_id, quantity, price, total)
-        VALUES (?, ?, ?, ?, ?)
-    )");
-
-        iq.addBindValue(invoiceId);
-        iq.addBindValue(medicineId);
-        iq.addBindValue(qty);
-        iq.addBindValue(m.getSalePrice());
-        iq.addBindValue(m.getSalePrice() * qty);
-
-        if(!iq.exec())
+        if (batches.isEmpty())
         {
-            qDebug() << "SQL ERROR invoice_items:" << iq.lastError().text();
             db.rollback();
             return -1;
         }
 
-        QSqlQuery stock(db);
-        stock.prepare(R"(
-        UPDATE medicines
-        SET quantity = quantity - ?
-        WHERE id = ?
-    )");
+        Medicine m = Medicine::getById(medicineId);
 
-        stock.addBindValue(qty);
-        stock.addBindValue(medicineId);
-
-        if (!stock.exec())
+        // 🔥 نسجل كل batch لوحده
+        for (auto &b : batches)
         {
-            db.rollback();
-            return -1;
+            int batchId = b.first;
+            int takenQty = b.second;
+
+            QSqlQuery iq(db);
+            iq.prepare(R"(
+                INSERT INTO invoice_items
+                (invoice_id, medicine_id, quantity, purchase_price, sale_price, total, batch_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            )");
+
+            iq.addBindValue(invoiceId);
+            iq.addBindValue(medicineId);
+            iq.addBindValue(takenQty);
+            iq.addBindValue(m.getSalePrice());
+            iq.addBindValue(m.getSalePrice());
+            iq.addBindValue(m.getSalePrice() * takenQty);
+            iq.addBindValue(batchId);
+
+            if (!iq.exec())
+            {
+                db.rollback();
+                return -1;
+            }
         }
     }
 
@@ -122,6 +121,52 @@ int Action::saveInvoice(
     return invoiceId;
 }
 
+bool Action::returnFEFO(QSqlDatabase &db, int medicineId, int qty)
+{
+    QSqlQuery q(db);
+
+    q.prepare(R"(
+        SELECT id, used_qty
+        FROM purchase_items
+        WHERE medicine_id = ?
+          AND used_qty > 0
+        ORDER BY expiry_date DESC, id DESC
+    )");
+
+    q.addBindValue(medicineId);
+
+    if (!q.exec())
+        return false;
+
+    int remaining = qty;
+
+    while (q.next() && remaining > 0)
+    {
+        int batchId = q.value(0).toInt();
+        int used = q.value(1).toInt();
+
+        int giveBack = qMin(used, remaining);
+
+        QSqlQuery u(db);
+        u.prepare(R"(
+            UPDATE purchase_items
+            SET used_qty = used_qty - ?,
+                returned_qty = returned_qty + ?
+            WHERE id = ?
+        )");
+
+        u.addBindValue(giveBack);
+        u.addBindValue(giveBack);
+        u.addBindValue(batchId);
+
+        if (!u.exec())
+            return false;
+
+        remaining -= giveBack;
+    }
+
+    return remaining == 0;
+}
 
 QMap<int, int> Action::getInvoiceItems(int invoiceId)
 {
@@ -190,7 +235,7 @@ int Action::saveReturnInvoice(
 
     QSqlQuery q(db);
 
-    // ================= 1. حفظ الفاتورة =================
+    // 1. header
     q.prepare(R"(
         INSERT INTO invoices
         (invoice_number, type, date, subtotal, tax, total, payment_method, reference_invoice_id)
@@ -211,53 +256,197 @@ int Action::saveReturnInvoice(
 
     int returnInvoiceId = q.lastInsertId().toInt();
 
-    // ================= 2. حفظ items =================
+    // 2. items
     for (auto it = returnCart.begin(); it != returnCart.end(); ++it)
     {
         int medicineId = it.key();
-        int qty        = it.value().first;
+        int qty = it.value().first;
         QString reason = it.value().second;
 
         Medicine m = Medicine::getById(medicineId);
 
-        QSqlQuery iq(db);
-        iq.prepare(R"(
-            INSERT INTO invoice_items
-            (invoice_id, medicine_id, quantity, price, total, return_reason)
-            VALUES (?, ?, ?, ?, ?, ?)
-        )");
+        auto batches = returnExactBatches(db, originalInvoiceId, medicineId, qty);
 
-        iq.addBindValue(returnInvoiceId);
-        iq.addBindValue(medicineId);
-        iq.addBindValue(qty);
-        iq.addBindValue(m.getSalePrice());
-        iq.addBindValue(m.getSalePrice() * qty);
-        iq.addBindValue(reason);
-
-        if (!iq.exec()) {
+        if (batches.isEmpty()) {
             db.rollback();
             return -1;
         }
 
-        // ================= 3. stock rollback =================
-        QSqlQuery stock(db);
-        stock.prepare(R"(
-            UPDATE medicines
-            SET quantity = quantity + ?
-            WHERE id = ?
-        )");
+        for (auto &b : batches)
+        {
+            int batchId = b.first;
+            int returnedQty = b.second;
 
-        stock.addBindValue(qty);
-        stock.addBindValue(medicineId);
+            QSqlQuery iq(db);
+            iq.prepare(R"(
+                INSERT INTO invoice_items
+                (invoice_id, medicine_id, quantity, purchase_price, sale_price, total, return_reason, batch_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            )");
 
-        if (!stock.exec()) {
-            db.rollback();
-            return -1;
+            iq.addBindValue(returnInvoiceId);
+            iq.addBindValue(medicineId);
+            iq.addBindValue(returnedQty);
+            iq.addBindValue(m.getSalePrice());
+            iq.addBindValue(m.getSalePrice());
+            iq.addBindValue(m.getSalePrice() * returnedQty);
+            iq.addBindValue(reason);
+            iq.addBindValue(batchId);
+
+            if (!iq.exec()) {
+                db.rollback();
+                return -1;
+            }
         }
     }
 
     db.commit();
     return returnInvoiceId;
+}
+
+bool Action::canReturn(int invoiceId, int medicineId, int qty)
+{
+    QSqlQuery q(Database::instance());
+
+    q.prepare(R"(
+        SELECT SUM(quantity - returned_qty)
+        FROM invoice_items
+        WHERE invoice_id = ?
+          AND medicine_id = ?
+    )");
+
+    q.addBindValue(invoiceId);
+    q.addBindValue(medicineId);
+
+    if (!q.exec() || !q.next())
+        return false;
+
+    int available = q.value(0).toInt();
+
+    return qty <= available;
+}
+
+QList<QPair<int,int>> Action::deductFEFO(QSqlDatabase &db, int medicineId, int qty)
+{
+    QList<QPair<int,int>> result;
+
+    QSqlQuery q(db);
+    q.prepare(R"(
+        SELECT id, quantity, used_qty
+        FROM purchase_items
+        WHERE medicine_id = ?
+          AND (quantity - used_qty) > 0
+        ORDER BY expiry_date ASC, id ASC
+    )");
+
+    q.addBindValue(medicineId);
+
+    if (!q.exec())
+        return {};
+
+    int remaining = qty;
+
+    while (q.next() && remaining > 0)
+    {
+        int batchId = q.value(0).toInt();
+        int quantity = q.value(1).toInt();
+        int used = q.value(2).toInt();
+
+        int available = quantity - used;
+        int take = qMin(available, remaining);
+
+        QSqlQuery u(db);
+        u.prepare("UPDATE purchase_items SET used_qty = used_qty + ? WHERE id = ?");
+        u.addBindValue(take);
+        u.addBindValue(batchId);
+
+        if (!u.exec())
+            return {};
+
+        result.append(qMakePair(batchId, take));
+
+        remaining -= take;
+    }
+
+    if (remaining > 0)
+        return {};
+
+    return result;
+}
+
+QList<QPair<int,int>> Action::returnExactBatches(
+    QSqlDatabase &db,
+    int invoiceId,
+    int medicineId,
+    int qty)
+{
+    QList<QPair<int,int>> result;
+
+    QSqlQuery q(db);
+
+    q.prepare(R"(
+        SELECT id, batch_id, quantity, returned_qty
+        FROM invoice_items
+        WHERE invoice_id = ?
+          AND medicine_id = ?
+        ORDER BY id DESC
+    )");
+
+    q.addBindValue(invoiceId);
+    q.addBindValue(medicineId);
+
+    if (!q.exec())
+        return {};
+
+    int remaining = qty;
+
+    while (q.next() && remaining > 0)
+    {
+        int itemId   = q.value(0).toInt();
+        int batchId  = q.value(1).toInt();
+        int soldQty  = q.value(2).toInt();
+        int returned = q.value(3).toInt();
+
+        int available = soldQty - returned;
+        if (available <= 0)
+            continue;
+
+        int take = qMin(available, remaining);
+
+        // ✅ 1. رجّع المخزون للباتش
+        QSqlQuery u(db);
+        u.prepare(R"(
+            UPDATE purchase_items
+            SET used_qty = used_qty - ?
+            WHERE id = ?
+        )");
+
+        u.addBindValue(take);
+        u.addBindValue(batchId);
+
+        if (!u.exec())
+            return {};
+
+        // ✅ 2. حدّث المرتجع في الفاتورة الأصلية
+        QSqlQuery u2(db);
+        u2.prepare(R"(
+            UPDATE invoice_items
+            SET returned_qty = returned_qty + ?
+            WHERE id = ?
+        )");
+
+        u2.addBindValue(take);
+        u2.addBindValue(itemId);
+
+        if (!u2.exec())
+            return {};
+
+        result.append({batchId, take});
+
+        remaining -= take;
+    }
+
+    return (remaining == 0) ? result : QList<QPair<int,int>>{};
 }
 
 // ================= DELETE =================

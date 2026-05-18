@@ -5,6 +5,7 @@
 #include <QList>
 #include <QMap>
 #include <QPair>
+#include <qsqldatabase.h>
 
 
 class Action
@@ -72,6 +73,19 @@ public:
     static QList<Action> filter(FilterType filter);
 
     static double getTodaySales();
+
+    static bool returnFEFO(QSqlDatabase &db, int medicineId, int qty);
+
+    static int getAvailableStock(QSqlDatabase &db, int medicineId);
+
+    static QList<QPair<int,int>> returnExactBatches(QSqlDatabase &db,
+                                                    int invoiceId,
+                                                    int medicineId,
+                                                    int qty);
+
+    static QList<QPair<int,int>> deductFEFO(QSqlDatabase &db, int medicineId, int qty);
+
+    static bool canReturn(int invoiceId, int medicineId, int qty);
 
     // ================= GETTERS =================
     int getId() const;

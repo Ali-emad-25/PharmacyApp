@@ -121,6 +121,24 @@ Medicine Medicine::getById(int id)
     return Medicine();
 }
 
+int Medicine::getTotalStock(int medicineId)
+{
+    QSqlQuery q(Database::instance());
+
+    q.prepare(R"(
+        SELECT COALESCE(SUM(quantity - used_qty - returned_qty), 0)
+        FROM purchase_items
+        WHERE medicine_id = ?
+    )");
+
+    q.addBindValue(medicineId);
+
+    if (!q.exec() || !q.next())
+        return 0;
+
+    return q.value(0).toInt();
+}
+
 
 QList<Medicine> Medicine::search(const QString &text)
 {

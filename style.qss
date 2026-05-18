@@ -112,7 +112,7 @@
    font-weight: bold;
    color: black;
 }
-#btnmidadd,
+#midbtnstock,
 #btnmode,
 #btnhomeadd,
 #purchbtnmode
@@ -124,21 +124,21 @@
     border-radius: 10px;
     font-size: 12px;
 }
-#btnmidadd:checked,
+#midbtnstock:checked,
 #btnmode:checked,
 #btnhomeadd:checked,
 #purchbtnmode:checked
 {
     font-weight: normal;
 }
-#btnmidadd:hover,
+#midbtnstock:hover,
 #btnmode:hover,
 #btnhomeadd:hover,
 #purchbtnmode:hover
 {
     background-color: #0d9488;
 }
-#btnmidadd:pressed,
+#midbtnstock:pressed,
 #btnmode:pressed,
 #btnhomeadd:pressed,
 purchbtnmode:pressed
@@ -172,6 +172,7 @@ purchbtnmode:pressed
 }
 
 #midtable,
+#midtablestock,
 #hometable,
 #actiontable,
 #purchtable,
@@ -185,6 +186,7 @@ purchbtnmode:pressed
 }
 
 #midtable::item,
+#midtablestock::item,
 #hometable::item,
 #actiontable::item,
 #purchtable::item,
@@ -204,6 +206,7 @@ QHeaderView::section
 }
 
 #midbacktable,
+#midbackstock,
 #hometablewid,
 #actiontablewid,
 #purchbackcart,
@@ -441,6 +444,7 @@ QScrollBar::sub-page:horizontal {
 
 #midlblform,
 #midlbltable,
+#midlblstock,
 #purchlbldetails,
 #purchlblcart,
 #purchlbltable,

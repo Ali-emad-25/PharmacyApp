@@ -40,9 +40,11 @@ private:
     purchaseswindow *purchasesCtrl;
     QButtonGroup *navGroup;
     QStandardItemModel *model;
+    QStandardItemModel *model2;
     QHash<int, Medicine> medicinesMap;
 
     void loadData();
+    void loadDataStock();
     void clearForm();
     void setEditModeUI(bool isEdit);
     bool isValidEAN13(const QString &code);

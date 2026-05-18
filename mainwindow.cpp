@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "database.h"
+#include "purchaseitem.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -37,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->btnmed, &QPushButton::clicked, this, [=](){
         ui->stackedWidget->setCurrentWidget(ui->medicines);
         // ui->pagesmid->setCurrentWidget(ui->pageveiwsmid);
-        ui->btnmidadd->setChecked(false);
+        ui->midbtnstock->setChecked(false);
         ui->midsearch->clear();
         ui->midsearch->setFocus();
         currentFilter = Medicine::ALL;
@@ -108,27 +109,29 @@ MainWindow::MainWindow(QWidget *parent)
         }
     });
 
-    // connect(ui->btnmidadd, &QPushButton::toggled, this, [=](bool checked) {
+    connect(ui->midbtnstock, &QPushButton::toggled, this, [=](bool checked) {
 
-    //     if (checked) {
-    //         ui->pagesmid->setCurrentWidget(ui->pageaddmid);
-    //         ui->btnmidadd->setText("f8               رجوع");
-    //         ui->btnmidadd->setIcon(QIcon("D:/Project_C++/PharmacyApp/icons/chevron-right.svg"));
-    //         ui->btnmidadd->setShortcut(QKeySequence("F8"));
-    //         ui->midsearch->clear();
-    //         ui->midsearch->setEnabled(false);
-    //         currentFilter = Medicine::ALL;
-    //         loadData();
+        if (checked) {
+            ui->stackedWidget_2->setCurrentWidget(ui->midbackstock);
+            ui->midbtnstock->setText("f8       الادوية");
+            ui->midbtnstock->setIcon(QIcon("D:/Project_C++/PharmacyApp/icons/chevron-right.svg"));
+            ui->midbtnstock->setShortcut(QKeySequence("F8"));
+            ui->midsearch->clear();
+            loadData();
+            // ui->midsearch->setEnabled(false);
+            // currentFilter = Medicine::ALL;
 
-    //     } else {
-    //         ui->pagesmid->setCurrentWidget(ui->pageveiwsmid);
-    //         ui->btnmidadd->setText("f8      إضافة دواء");
-    //         ui->btnmidadd->setIcon(QIcon("D:/Project_C++/PharmacyApp/icons/plus.svg"));
-    //         ui->btnmidadd->setShortcut(QKeySequence("F8"));
-    //         ui->midsearch->setEnabled(true);
-    //         clearForm();
-    //     }
-    // });
+        } else {
+            ui->stackedWidget_2->setCurrentWidget(ui->midbacktable);
+            ui->midbtnstock->setText("f8      المخزون");
+            ui->midbtnstock->setIcon(QIcon("D:/Project_C++/PharmacyApp/icons/plus.svg"));
+            ui->midbtnstock->setShortcut(QKeySequence("F8"));
+            ui->midsearch->clear();
+            loadDataStock();
+            // ui->midsearch->setEnabled(true);
+            // clearForm();
+        }
+    });
 
     // connect(ui->availablevalue, &QPushButton::clicked, this, [=](){
     //     searchText.clear();
@@ -161,7 +164,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->btnrep->setCursor(Qt::PointingHandCursor);
     ui->btnset->setCursor(Qt::PointingHandCursor);
     ui->btnexit->setCursor(Qt::PointingHandCursor);
-    ui->btnmidadd->setCursor(Qt::PointingHandCursor);
+    ui->midbtnstock->setCursor(Qt::PointingHandCursor);
     ui->midsave->setCursor(Qt::PointingHandCursor);
     ui->midcancel->setCursor(Qt::PointingHandCursor);
     // ui->totalvalue->setCursor(Qt::PointingHandCursor);
@@ -201,36 +204,54 @@ MainWindow::MainWindow(QWidget *parent)
     ui->midtable->horizontalScrollBar()->setCursor(Qt::PointingHandCursor);
     ui->midtable->verticalScrollBar()->setCursor(Qt::PointingHandCursor);
 
+    model2 = new QStandardItemModel(this);
+    ui->midtablestock->setModel(model2);
+
+    ui->midtablestock->setAlternatingRowColors(true);
+    ui->midtablestock->setShowGrid(false);
+    ui->midtablestock->setFrameShape(QFrame::NoFrame);
+    ui->midtablestock->verticalHeader()->setVisible(false);
+    ui->midtablestock->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->midtablestock->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->midtablestock->setSelectionMode(QAbstractItemView::NoSelection);
+    ui->midtablestock->setFocusPolicy(Qt::NoFocus);
+    ui->midtablestock->setTextElideMode(Qt::ElideNone);
+    ui->midtablestock->verticalHeader()->setDefaultSectionSize(45);
+    ui->midtablestock->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->midtablestock->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->midtablestock->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter);
+
     ui->hometable->setStyleSheet("border: none;");
     ui->actiontable->setStyleSheet("border: none;");
     ui->purchcart->setStyleSheet("border: none;");
     ui->purchtable->setStyleSheet("border: none;");
+    ui->midtablestock->setStyleSheet("border: none;");
 
     loadData();
-    // updateStats();
+    loadDataStock();
 }
 
 
-// bool MainWindow::isValidEAN13(const QString &code)
-// {
-//     if (code.length() != 13) return false;
+bool MainWindow::isValidEAN13(const QString &code)
+{
+    if (code.length() != 13) return false;
 
-//     int sum = 0;
+    int sum = 0;
 
-//     for (int i = 0; i < 12; i++)
-//     {
-//         int digit = code[i].digitValue();
+    for (int i = 0; i < 12; i++)
+    {
+        int digit = code[i].digitValue();
 
-//         if (i % 2 == 0)
-//             sum += digit;
-//         else
-//             sum += digit * 3;
-//     }
+        if (i % 2 == 0)
+            sum += digit;
+        else
+            sum += digit * 3;
+    }
 
-//     int checkDigit = (10 - (sum % 10)) % 10;
+    int checkDigit = (10 - (sum % 10)) % 10;
 
-//     return checkDigit == code[12].digitValue();
-// }
+    return checkDigit == code[12].digitValue();
+}
 
 void MainWindow::on_midsave_clicked()
 {
@@ -281,7 +302,6 @@ void MainWindow::on_midsave_clicked()
         QMessageBox::information(this,"نجاح","تم الحفظ بنجاح");
         clearForm();
         loadData();
-        // updateStats();
         setEditModeUI(false);
         currentId = 0;
         actionCtrl->refreshCompleter(actionCtrl->isReturnMode);
@@ -291,8 +311,6 @@ void MainWindow::on_midsave_clicked()
             actionCtrl->loadData();
         }
         purchasesCtrl->refreshCompleter(purchasesCtrl->isReturnMode);;
-        // ui->pagesmid->setCurrentWidget(ui->pageveiwsmid);
-        // ui->btnmidadd->setChecked(false);
 
     } else {
         QMessageBox::critical(this,"خطأ","فشل الحفظ (ممكن الباركود مكرر)");
@@ -309,11 +327,8 @@ void MainWindow::clearForm()
     ui->name->clear();
     ui->category->clear();
     ui->sale_price->clear();
-    // ui->quantity->clear();
     ui->min_quantity->clear();
-    // ui->supplier->clear();
     ui->barcode->clear();
-    // ui->expiry_date->setDate(QDate::currentDate());
     ui->name->setFocus();
     setEditModeUI(false);
 
@@ -414,13 +429,22 @@ void MainWindow::loadData()
         const Medicine &m = list[row];
         int id = m.getId();
 
+        auto *qtyItem = new QStandardItem(
+            QString::number(Medicine::getTotalStock(id))
+            );
+
         auto *barcodeItem = new QStandardItem(m.getBarcode());
         auto *nameItem    = new QStandardItem(m.getName());
         auto *catItem     = new QStandardItem(m.getCategory());
         auto *salepriceItem   = new QStandardItem(QString::number(m.getSalePrice()));
 
         QList<QStandardItem*> items = {
-            barcodeItem, nameItem, catItem, salepriceItem,new QStandardItem("1"), new QStandardItem("")
+            barcodeItem,
+            nameItem,
+            catItem,
+            salepriceItem,
+            qtyItem,
+            new QStandardItem("")
         };
 
         model->appendRow(items);
@@ -436,17 +460,6 @@ void MainWindow::loadData()
         nameItem->setFont(boldFont);
         salepriceItem->setForeground(teal);
         salepriceItem->setFont(boldFont);
-
-        QColor color;
-
-        // if (m.getStatus() == "متوفر") color = green;
-        // else if (m.getStatus() == "ناقص") color = yellow;
-        // else if (m.getStatus() == "غير متوفر") color = purple;
-        // else color = red;
-
-        // statusItem->setForeground(color);
-        // qtyItem->setForeground(color);
-        // qtyItem->setFont(boldFont);
 
         QWidget *actionWidget = new QWidget();
         QHBoxLayout *layout = new QHBoxLayout(actionWidget);
@@ -483,7 +496,6 @@ void MainWindow::loadData()
             ui->name->setText(m.getName());
             ui->category->setText(m.getCategory());
             ui->sale_price->setText(QString::number(m.getSalePrice()));
-            // ui->quantity->setText(QString::number(m.getQuantity()));
             ui->min_quantity->setText(QString::number(m.getMinQuantity()));
             ui->barcode->setText(m.getBarcode());
 
@@ -521,6 +533,147 @@ void MainWindow::loadData()
         });
     }
 }
+
+void MainWindow::loadDataStock()
+{
+    model2->clear();
+
+    model2->setColumnCount(6);
+    model2->setHorizontalHeaderLabels({
+        "اسم الدواء",
+        "(Batch) الكمية",
+        "تاريخ الانتهاء",
+        "سعر الشراء",
+        "رقم الفاتورة",
+        "الإجراءات"
+    });
+
+    QList<PurchaseItem> list = PurchaseItem::getAll();
+    // لازم تكون ORDER BY medicine_name, expiry_date ASC
+
+    QColor gray(107,114,128);
+    QColor dark(17,24,39);
+    QColor teal(20,184,166);
+
+    QFont headerFont("Segoe UI", 11, QFont::Bold);
+    QFont normalFont("Segoe UI", 10);
+
+    QString lastMedicine = "";
+
+    int row = 0;
+
+    for (const PurchaseItem &item : list)
+    {
+        QString medicineName = item.getMedicineName();
+
+        // ================= GROUP HEADER =================
+        if (medicineName != lastMedicine)
+        {
+            lastMedicine = medicineName;
+
+            auto *header = new QStandardItem(medicineName);
+
+            QList<QStandardItem*> headerRow = {
+                header,
+                new QStandardItem(""),
+                new QStandardItem(""),
+                new QStandardItem(""),
+                new QStandardItem(""),
+                new QStandardItem("")
+            };
+
+            model2->appendRow(headerRow);
+
+            for (auto *it : headerRow)
+            {
+                it->setTextAlignment(Qt::AlignCenter);
+                it->setForeground(dark);
+                it->setFont(headerFont);
+            }
+
+            row++;
+        }
+
+        // ================= DATA ROW =================
+        QString batchName = "Batch " + QString::number(item.getId());
+
+        auto *nameItem    = new QStandardItem(batchName);
+        auto *qtyItem     = new QStandardItem(QString::number(item.getAvailableQty()));
+        auto *expiryItem  = new QStandardItem(item.getExpiryDate());
+        auto *priceItem   = new QStandardItem(QString::number(item.getPurchasePrice()));
+        auto *invoiceItem = new QStandardItem(item.getInvoiceNumber());
+        auto *emptyItem   = new QStandardItem("");
+
+        QList<QStandardItem*> items = {
+            nameItem,
+            qtyItem,
+            expiryItem,
+            priceItem,
+            invoiceItem,
+            emptyItem
+        };
+
+        model2->appendRow(items);
+
+        for (auto *it : items)
+        {
+            it->setTextAlignment(Qt::AlignCenter);
+            it->setForeground(gray);
+            it->setFont(normalFont);
+        }
+
+        priceItem->setForeground(teal);
+
+        // ================= ACTIONS =================
+        QWidget *widget = new QWidget();
+        QHBoxLayout *layout = new QHBoxLayout(widget);
+
+        QPushButton *deleteBtn = new QPushButton();
+
+        deleteBtn->setIcon(QIcon("D:/Project_C++/PharmacyApp/icons/trash.svg"));
+        deleteBtn->setFixedSize(28,28);
+
+        layout->addWidget(deleteBtn);
+        layout->setContentsMargins(0,0,0,0);
+        layout->setAlignment(Qt::AlignCenter);
+
+        ui->midtablestock->setIndexWidget(model2->index(row, 5), widget);
+
+        int batchId = item.getId();
+
+        connect(deleteBtn, &QPushButton::clicked, this, [=]() {
+
+            auto reply = QMessageBox::question(
+                this,
+                "تأكيد",
+                "هل تريد حذف الباتش؟",
+                QMessageBox::Yes | QMessageBox::No
+                );
+
+            if (reply == QMessageBox::Yes)
+            {
+                if (!PurchaseItem::deleteItem(batchId))
+                {
+                    QMessageBox::critical(this, "Error", "فشل حذف الباتش");
+                    return;
+                }
+
+                loadDataStock();
+            }
+        });
+
+        row++;
+    }
+
+    ui->midtablestock->viewport()->update();
+
+    auto header = ui->midtablestock->horizontalHeader();
+    header->setSectionResizeMode(QHeaderView::Stretch);
+
+    header->setSectionResizeMode(2, QHeaderView::Fixed);
+    ui->midtablestock->setColumnWidth(2, 120);
+}
+
 
 MainWindow::~MainWindow()
 {

@@ -51,7 +51,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="purchases">
        <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -923,7 +923,13 @@
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
-                     <height>45</height>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <layout class="QHBoxLayout" name="horizontalLayout_14">
@@ -935,6 +941,9 @@
                     </property>
                     <property name="rightMargin">
                      <number>20</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>10</number>
                     </property>
                     <item>
                      <widget class="QLabel" name="purchmode">
@@ -1902,6 +1911,9 @@
                  </property>
                  <property name="rightMargin">
                   <number>20</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>10</number>
                  </property>
                  <item>
                   <widget class="QLabel" name="actionmode">
@@ -3088,7 +3100,7 @@
             <number>20</number>
            </property>
            <item>
-            <widget class="QPushButton" name="btnmidadd">
+            <widget class="QPushButton" name="midbtnstock">
              <property name="minimumSize">
               <size>
                <width>120</width>
@@ -3608,30 +3620,30 @@
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
-                   <height>75</height>
+                   <height>0</height>
                   </size>
                  </property>
                  <property name="maximumSize">
                   <size>
                    <width>16777215</width>
-                   <height>75</height>
+                   <height>16777215</height>
                   </size>
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_7">
                   <property name="spacing">
-                   <number>0</number>
+                   <number>10</number>
                   </property>
                   <property name="leftMargin">
-                   <number>0</number>
+                   <number>20</number>
                   </property>
                   <property name="topMargin">
-                   <number>0</number>
+                   <number>20</number>
                   </property>
                   <property name="rightMargin">
                    <number>20</number>
                   </property>
                   <property name="bottomMargin">
-                   <number>0</number>
+                   <number>10</number>
                   </property>
                   <item>
                    <spacer name="horizontalSpacer_5">
@@ -3665,7 +3677,100 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="page_2"/>
+             <widget class="QWidget" name="midbackstock">
+              <layout class="QVBoxLayout" name="verticalLayout_37">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <property name="leftMargin">
+                <number>2</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>2</number>
+               </property>
+               <property name="bottomMargin">
+                <number>4</number>
+               </property>
+               <item>
+                <widget class="QWidget" name="widget_41" native="true">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_52">
+                  <property name="spacing">
+                   <number>10</number>
+                  </property>
+                  <property name="leftMargin">
+                   <number>20</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>20</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>20</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>10</number>
+                  </property>
+                  <item>
+                   <widget class="QPushButton" name="midbtnexpired">
+                    <property name="text">
+                     <string>انتهى</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="midbtnexpire">
+                    <property name="text">
+                     <string>وشك الانتهاء</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="midbtnlow">
+                    <property name="text">
+                     <string>نقص</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="midbtnall">
+                    <property name="text">
+                     <string>الكل</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="midlblstock">
+                    <property name="text">
+                     <string>المخزون</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QTableView" name="midtablestock">
+                 <property name="layoutDirection">
+                  <enum>Qt::LayoutDirection::RightToLeft</enum>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
             </widget>
            </item>
           </layout>

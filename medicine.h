@@ -38,6 +38,8 @@ public:
 
     static Medicine getById(int id);
 
+    static int getTotalStock(int medicineId);
+
     QString getName() const;
     QString getCategory() const;
     int getQuantity() const;
