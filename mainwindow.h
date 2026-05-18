@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "medicine.h"
+#include "purchaseitem.h"
 #include "actionwindow.h"
 #include "homewindow.h"
 #include "purchaseswindow.h"
@@ -29,6 +30,8 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void loadDataStock();
+
 private slots:
     void on_midsave_clicked();
     void on_midcancel_clicked();
@@ -44,7 +47,6 @@ private:
     QHash<int, Medicine> medicinesMap;
 
     void loadData();
-    void loadDataStock();
     void clearForm();
     void setEditModeUI(bool isEdit);
     bool isValidEAN13(const QString &code);
@@ -54,6 +56,6 @@ private:
 
     QString searchText;
 
-    Medicine::FilterType currentFilter = Medicine::ALL;
+    PurchaseItem::BatchFilter currentBatchFilter = PurchaseItem::ALL;
 };
 #endif

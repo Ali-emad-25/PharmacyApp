@@ -3,6 +3,7 @@
 #include "database.h"
 #include "medicine.h"
 #include "action.h"
+#include "purchaseitem.h"
 
 actionwindow::actionwindow(Ui::MainWindow *ui, homewindow *home)
 {
@@ -49,94 +50,102 @@ actionwindow::actionwindow(Ui::MainWindow *ui, homewindow *home)
             this, [this, ui]() {
 
                 QString key = ui->actionsearch->text().trimmed();
-                if (key.isEmpty()) {
-                    if (!isReturnMode) {
-                        QMessageBox::warning(this, "خطأ", "من فضلك أدخل اسم الدواء او الباركود");
-                        return;
 
-                    } else {
-                        QMessageBox::warning(this, "خطأ", "من فضلك أدخل رقم الفاتورة");
-                        return;
-                    }
+                if (key.isEmpty())
+                {
+                    QMessageBox::warning(this, "خطأ",
+                                         isReturnMode ? "من فضلك أدخل رقم الفاتورة"
+                                                      : "من فضلك أدخل اسم الدواء أو الباركود");
+                    return;
                 }
 
-                if(!isReturnMode) {
+                // ===================== SALE MODE =====================
+                if (!isReturnMode)
+                {
                     QList<Medicine> result = Medicine::search(key);
-                    if(result.isEmpty()) {
-                        QMessageBox::warning(this, "خطأ", "لا يوجد دواء مطابق لهذا البحث");
+
+                    if (result.isEmpty())
+                    {
+                        QMessageBox::warning(this, "خطأ",
+                                             "لا يوجد دواء مطابق لهذا البحث");
                         return;
                     }
 
                     Medicine m = result.first();
-
-                    // ================= CHECK STATUS =================
-                    // QString status = m.getStatus();
-
-                    // if(status == "غير متوفر")
-                    // {
-                    //     QMessageBox::warning(this, "خطأ", "هذا الدواء غير متوفر في المخزون");
-                    //     ui->actionsearch->clear();
-                    //     return;
-                    // }
-
-                    // if(status == "منتهي الصلاحية")
-                    // {
-                    //     QMessageBox::warning(this, "خطأ", "هذا الدواء منتهي الصلاحية");
-                    //     ui->actionsearch->clear();
-                    //     return;
-                    // }
-
-                    // ================= ADD TO CART =================
                     int id = m.getId();
 
-                    if(cart.isEmpty())
+                    int maxQty = PurchaseItem::getAvailableQtyByMedicine(id);
+
+                    if (maxQty <= 0)
+                    {
+                        QMessageBox::warning(this, "خطأ",
+                                             "هذا الدواء غير متوفر في المخزون أو منتهي الصلاحية");
+                        return;
+                    }
+
+                    if (cart.isEmpty())
                         generateInvoiceNumber(false);
 
-                    if(cart.contains(id))
-                        cart[id]++;
-                    else
-                        cart.insert(id, 1);
+                    int currentQty = cart.value(id, 0);
+
+                    if (currentQty + 1 > maxQty)
+                    {
+                        QMessageBox::warning(this, "تنبيه",
+                                             "الكمية المتاحة فقط: " + QString::number(maxQty));
+                        return;
+                    }
+
+                    cart[id] = currentQty + 1;
 
                     loadData();
                     updateTotals();
                     updateItemsCount();
+                }
 
-                } else {
+                // ===================== RETURN MODE =====================
+                else
+                {
                     QList<Action> result = Action::search(key);
 
-                    if(result.isEmpty())
+                    if (result.isEmpty())
                     {
-                        QMessageBox::warning(this, "خطأ", "لا يوجد فاتورة مطابقة لهذا البحث");
+                        QMessageBox::warning(this, "خطأ",
+                                             "لا يوجد فاتورة مطابقة لهذا البحث");
                         return;
                     }
 
                     Action a = result.first();
 
-                    if(a.getType() == "مرتجع")
+                    if (a.getType() == "مرتجع")
                     {
-                        QMessageBox::warning(this, "خطأ", "هذه الفاتورة مرتجعة بالفعل");
+                        QMessageBox::warning(this, "خطأ",
+                                             "هذه الفاتورة مرتجعة بالفعل");
                         return;
                     }
 
-                    if(cart.isEmpty()) {
-                        currentInvoiceId = a.getId();
-
-                        cart = Action::getInvoiceItems(a.getId());
-
-                        invoiceStarted = true;
-                        generateInvoiceNumber(true);
-
-                        ui->actiondatesale->setText(a.getDate());
-                        ui->actionvaluesale->setText(a.getInvoiceNumber());
-
-                        loadReturnData();
-                        updateTotals();
-                        updateItemsCount();
-
-                        QMessageBox::information(this, "تم", "تم تحميل الفاتورة بنجاح");
-                    } else {
-                        QMessageBox::warning(this, "خطأ", "لا يمكن تحميل الفاتورة الان");
+                    if (!cart.isEmpty())
+                    {
+                        QMessageBox::warning(this, "خطأ",
+                                             "لا يمكن تحميل فاتورة أثناء وجود عناصر في الكارت");
+                        return;
                     }
+
+                    currentInvoiceId = a.getId();
+
+                    cart = Action::getInvoiceItems(a.getId());
+
+                    invoiceStarted = true;
+                    generateInvoiceNumber(true);
+
+                    ui->actiondatesale->setText(a.getDate());
+                    ui->actionvaluesale->setText(a.getInvoiceNumber());
+
+                    loadReturnData();
+                    updateTotals();
+                    updateItemsCount();
+
+                    QMessageBox::information(this, "تم",
+                                             "تم تحميل الفاتورة بنجاح");
                 }
 
                 ui->actionsearch->clear();
@@ -190,6 +199,7 @@ actionwindow::actionwindow(Ui::MainWindow *ui, homewindow *home)
             invoiceStarted = false;
             invoiceNumber.clear();
             loadData();
+            ui->actionvaluesale->setText(QString::number(Action::getTodaySales()));
         }
 
         // ================= RETURN MODE =================
@@ -256,6 +266,7 @@ actionwindow::actionwindow(Ui::MainWindow *ui, homewindow *home)
             invoiceNumber.clear();
             loadReturnData();
             ui->actiondatesale->setText("0");
+            ui->actionvaluereturn->setText(QString::number(Action::getTodayReturns()));
         }
 
         // ================= RESET SYSTEM =================
@@ -268,6 +279,8 @@ actionwindow::actionwindow(Ui::MainWindow *ui, homewindow *home)
         homeCtrl->searchText.clear();
         homeCtrl->currentFilter = Action::ALL;
         homeCtrl->loadData();
+        homeCtrl->getTodayNetSales();
+        homeCtrl->getTodayReturns();
     });
 
     connect(ui->btnmode, &QPushButton::toggled, this, [=](bool checked) {
@@ -298,13 +311,29 @@ actionwindow::actionwindow(Ui::MainWindow *ui, homewindow *home)
             ui->actionbtnvisa->setIcon(QIcon("D:/Project_C++/PharmacyApp/icons/credit-card4.svg"));
     });
 
+    connect(ui->actionbtncancel, &QPushButton::clicked,
+            this, [=]() {
+                cart.clear();
+                returnReasons.clear();
+                invoiceStarted = false;
+                invoiceNumber.clear();
+                ui->actionvaluesale->setText("0");
+                ui->actionvaluereturn->setText("0");
+                updateTotals();
+                updateItemsCount();
+
+                if(!isReturnMode)
+                    loadData();
+                else
+                    loadReturnData();
+            });
+
     ui->actionwidgetreturnnum->setVisible(false);
     ui->actionwidgetreturndate->setVisible(false);
 
     refreshCompleter(isReturnMode);
     loadData();
 }
-
 
 
 void actionwindow::setEditModeUI(bool isEdit)
@@ -383,22 +412,19 @@ void actionwindow::refreshCompleter(bool mode)
 
         for(int i = 0; i < a.size(); i++)
         {
-            if(a[i].getInvoiceNumber().contains("INV")) // fix القوس
+            if(a[i].getInvoiceNumber().contains("INV"))
             {
                 suggestions << a[i].getInvoiceNumber();
             }
         }
     }
 
-    // 🔥 إزالة التكرار + ترتيب
     suggestions.removeDuplicates();
     suggestions.sort(Qt::CaseInsensitive);
 
-    // 🔥 امسح القديم لو موجود (مهم جدًا)
     if(ui->actionsearch->completer())
         delete ui->actionsearch->completer();
 
-    // 🔥 إنشاء completer جديد
     QCompleter *completer = new QCompleter(suggestions, this);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     completer->setFilterMode(Qt::MatchContains);
@@ -565,52 +591,55 @@ QLineEdit {
         ui->actiontable->setIndexWidget(model->index(row, 2), qtyEdit);
 
         // ===== SIGNAL =====
-        connect(qtyEdit, &QLineEdit::returnPressed,
-                this, [=]() {
+        connect(qtyEdit, &QLineEdit::returnPressed, this, [=]() {
 
-                    int id = qtyEdit->property("id").toInt();
+            int id = qtyEdit->property("id").toInt();
 
-                    if (!cart.contains(id)) return;
+            if (!cart.contains(id))
+                return;
 
-                    Medicine m = Medicine::getById(id);
-                    // int maxQty = m.getQuantity();
+            int qty = qtyEdit->text().toInt();
 
-                    int qty = qtyEdit->text().toInt();
+            // ================= VALIDATION =================
+            if (qty < 1)
+            {
+                qty = 1;
+                qtyEdit->setText("1");
+            }
 
-                    // ================= MIN CHECK =================
-                    if (qty < 1)
-                    {
-                        qty = 1;
-                        qtyEdit->setText("1");
-                    }
+            // ================= GET REAL STOCK (FEFO SAFE) =================
+            int maxQty = PurchaseItem::getAvailableQtyByMedicine(id);
 
-                    // ================= MAX CHECK =================
-                    // if (!isReturnMode && qty > maxQty)
-                    // {
-                    //     QMessageBox::warning(this,
-                    //                          "الكمية غير متاحة",
-                    //                          "الحد الأقصى المتاح هو: " + QString::number(maxQty));
+            if (!isReturnMode && qty > maxQty)
+            {
+                QMessageBox::warning(this,
+                                     "الكمية غير متاحة",
+                                     "الحد الأقصى المتاح هو: " + QString::number(maxQty));
 
-                    //     qty = maxQty;
-                    //     qtyEdit->setText(QString::number(maxQty));
-                    // }
+                qty = maxQty;
+                qtyEdit->setText(QString::number(maxQty));
+            }
 
-                    // ================= UPDATE CART =================
-                    cart[id] = qty;
+            // ================= UPDATE CART =================
+            cart[id] = qty;
 
-                    updateTotals();
-                    updateItemsCount();
+            updateTotals();
+            updateItemsCount();
 
-                    // ================= UPDATE TOTAL =================
-                    auto priceItem = model->item(row, 1);
-                    auto totalItem = model->item(row, 3);
+            // ================= UPDATE ROW TOTAL =================
+            for (int r = 0; r < model->rowCount(); r++)
+            {
+                auto item = model->item(r, 0);
+                if (!item) continue;
 
-                    if (priceItem && totalItem)
-                    {
-                        double price = priceItem->text().toDouble();
-                        totalItem->setText(QString::number(price * qty));
-                    }
-                });
+                if (item->data(Qt::UserRole).toInt() == id)
+                {
+                    double price = model->item(r, 1)->text().toDouble();
+                    model->item(r, 3)->setText(QString::number(price * qty));
+                    break;
+                }
+            }
+        });
 
         for (int i = 0; i < items.size(); i++)
         {
@@ -696,7 +725,6 @@ void actionwindow::loadReturnData()
     for (auto it = temp.begin(); it != temp.end(); ++it)
     {
         int id = it.key();
-        // int originalQty = it.value();
 
         cart[id] = 0;
 
@@ -704,21 +732,6 @@ void actionwindow::loadReturnData()
         int originalQty = Action::getInvoiceItems(currentInvoiceId).value(id);
 
         QString name = m.getName();
-
-        // if (name.length() > 9)
-        // {
-        //     int breakIndex = name.lastIndexOf(' ', 9);
-
-        //     // لو مفيش مسافة قبل 12
-        //     if (breakIndex == -1)
-        //         breakIndex = name.indexOf(' ');
-
-        //     // لو لسه مفيش (كلمة واحدة طويلة)
-        //     if (breakIndex == -1)
-        //         breakIndex = 9;
-
-        //     name.insert(breakIndex, "\n");
-        // }
 
         auto *nameItem = new QStandardItem(name);
         auto *priceItem = new QStandardItem(QString::number(m.getSalePrice()));

@@ -164,54 +164,6 @@ QList<Medicine> Medicine::search(const QString &text)
     return list;
 }
 
-
-// QString Medicine::getStatus() const
-// {
-//     QDate exp = QDate::fromString(expiry_date, Qt::ISODate);
-//     QDate today = QDate::currentDate();
-
-//     if (quantity == 0) {
-//         return "غير متوفر";
-//     }
-//     else if (exp <= today) {
-//         return "منتهي الصلاحية";
-//     }
-//     else if (quantity <= min_quantity) {
-//         return "ناقص";
-//     }
-
-//     return "متوفر";
-// }
-
-// QList<Medicine> Medicine::filter(FilterType filter)
-// {
-//     QList<Medicine> list;
-
-//     QSqlQuery q(Database::instance());
-//     q.exec("SELECT * FROM medicines");
-
-//     while (q.next())
-//     {
-//         Medicine m = toMedicine(q);
-//         QString status = m.getStatus();
-
-//         if (filter == ALL)
-//             list.append(m);
-
-//         else if (filter == AVAILABLE && m.getStatus() == "متوفر")
-//             list.append(m);
-
-//         else if (filter == LOW && m.getStatus() == "ناقص")
-//             list.append(m);
-
-//         else if (filter == EXPIRED && m.getStatus() == "منتهي الصلاحية")
-//             list.append(m);
-//     }
-
-//     return list;
-// }
-
-
 QString Medicine::getName() const { return name; }
 QString Medicine::getCategory() const { return category; }
 int Medicine::getQuantity() const { return quantity; }

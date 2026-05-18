@@ -72,7 +72,6 @@ int Action::saveInvoice(
 
     int invoiceId = q.lastInsertId().toInt();
 
-    // 🔥 لكل دواء
     for (auto it = cart.begin(); it != cart.end(); ++it)
     {
         int medicineId = it.key();
@@ -88,7 +87,6 @@ int Action::saveInvoice(
 
         Medicine m = Medicine::getById(medicineId);
 
-        // 🔥 نسجل كل batch لوحده
         for (auto &b : batches)
         {
             int batchId = b.first;
@@ -332,12 +330,13 @@ QList<QPair<int,int>> Action::deductFEFO(QSqlDatabase &db, int medicineId, int q
 
     QSqlQuery q(db);
     q.prepare(R"(
-        SELECT id, quantity, used_qty
-        FROM purchase_items
-        WHERE medicine_id = ?
-          AND (quantity - used_qty) > 0
-        ORDER BY expiry_date ASC, id ASC
-    )");
+    SELECT id, quantity, used_qty
+    FROM purchase_items
+    WHERE medicine_id = ?
+      AND (quantity - used_qty) > 0
+      AND DATE(expiry_date) > DATE('now')
+    ORDER BY expiry_date ASC, id ASC
+)");
 
     q.addBindValue(medicineId);
 
@@ -584,6 +583,48 @@ double Action::getTodaySales()
         return 0;
 
     return q.value(0).toDouble();
+}
+
+double Action::getTodayReturns()
+{
+    QSqlQuery q(Database::instance());
+
+    QString today = QDate::currentDate().toString("yyyy-MM-dd");
+
+    q.prepare(R"(
+        SELECT SUM(total)
+        FROM invoices
+        WHERE type = 'مرتجع'
+        AND date = ?
+    )");
+
+    q.addBindValue(today);
+
+    if (!q.exec() || !q.next())
+        return 0;
+
+    return q.value(0).toInt();
+}
+
+int Action::getReturnsCounter()
+{
+    QSqlQuery q(Database::instance());
+
+    QString today = QDate::currentDate().toString("yyyy-MM-dd");
+
+    q.prepare(R"(
+        SELECT COUNT(*)
+        FROM invoices
+        WHERE type = 'مرتجع'
+        AND date = ?
+    )");
+
+    q.addBindValue(today);
+
+    if (!q.exec() || !q.next())
+        return 0;
+
+    return q.value(0).toInt();
 }
 
 // ================= GETTERS =================

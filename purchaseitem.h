@@ -43,6 +43,19 @@ public:
     static QList<PurchaseItem> getByMedicine(int medicineId);
     static bool deleteItem(int id);
 
+    enum BatchFilter {
+        ALL,
+        LOW_STOCK,
+        EXPIRED
+    };
+
+    static int countExpiredBatches();
+    static int countLowStockMedicines();
+
+    static int getAvailableQtyByMedicine(int medicineId);
+
+    static QList<PurchaseItem> filter(BatchFilter filter);
+
     // GETTERS
     int getId() const;
     int getPurchaseId() const;

@@ -74,6 +74,10 @@ public:
 
     static double getTodaySales();
 
+    static double getTodayReturns();
+
+    static int getReturnsCounter();
+
     static bool returnFEFO(QSqlDatabase &db, int medicineId, int qty);
 
     static int getAvailableStock(QSqlDatabase &db, int medicineId);

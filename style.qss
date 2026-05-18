@@ -303,24 +303,31 @@ QScrollBar::sub-page:horizontal {
 }
 
 #homelbllow,
-#homelowvalue,
+#homeexpiredvalue,
 #homelowdetails
 {
     font-size: 13px;
     color: #F56565;
 }
-
 #homelowvalue
+{
+    font-size: 13px;
+    color: black;
+}
+
+#homelowvalue,
+#homeexpiredvalue
 {
     font-size: 22px;
     font-weight: bold;
 }
+
+
 #homelowdetails
 {
     font-size: 11px;
     font-weight: bold;
 }
-
 
 
 #homesaleicon
@@ -356,7 +363,13 @@ QScrollBar::sub-page:horizontal {
 
 #hometablebtnall,
 #hometablebtnsale,
-#hometablebtnreturn
+#hometablebtnreturn,
+#purchbtnall,
+#purchbtn,
+#purchbtnreturn,
+#midbtnall,
+#midbtnlow,
+#midbtnexpired
 {
     background: #F8FAFC;
     color: #64748B;
@@ -366,14 +379,26 @@ QScrollBar::sub-page:horizontal {
 
 #hometablebtnall:hover,
 #hometablebtnsale:hover,
-#hometablebtnreturn:hover
+#hometablebtnreturn:hover,
+#purchbtnall:hover,
+#purchbtn:hover,
+#purchbtnreturn:hover,
+#midbtnall:hover,
+#midbtnlow:hover,
+#midbtnexpired:hover
 {
     background: #E2E8F0;
 }
 
 #hometablebtnall:checked,
 #hometablebtnsale:checked,
-#hometablebtnreturn:checked
+#hometablebtnreturn:checked,
+#purchbtnall:checked,
+#purchbtn:checked,
+#purchbtnreturn:checked,
+#midbtnall:checked,
+#midbtnlow:checked,
+#midbtnexpired:checked
 {
     background-color: #14b8a6;
     color: white;

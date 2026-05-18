@@ -34,6 +34,7 @@ public:
     void loadReturnData();
     bool isReturnMode = false;
 
+
 private:
     Ui::MainWindow *ui;
 

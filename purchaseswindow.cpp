@@ -1,15 +1,20 @@
 #include "purchaseswindow.h"
 #include "database.h"
+#include "mainwindow.h"
 #include "medicine.h"
 #include "purchases.h"
 #include "ui_mainwindow.h"
+#include "mainwindow.h"
 
 #include "QcalendarWidget"
 
 
-purchaseswindow::purchaseswindow(Ui::MainWindow *ui)
+purchaseswindow::purchaseswindow(Ui::MainWindow *ui, homewindow *home, MainWindow *mw)
 {
+
     this->ui = ui;
+    this->homeCtrl = home;
+    this->mainWindow = mw;
 
     ui->purchvaluedate->setText(QDate::currentDate().toString("yyyy-MM-dd"));
 
@@ -41,21 +46,6 @@ purchaseswindow::purchaseswindow(Ui::MainWindow *ui)
     ui->purchcart->setFocusPolicy(Qt::NoFocus);
     ui->purchcart->setFrameShape(QFrame::NoFrame);
     ui->purchcart->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter);
-
-    model2 = new QStandardItemModel(this);
-    ui->purchtable->setModel(model2);
-
-    ui->purchtable->verticalHeader()->setVisible(false);
-    ui->purchtable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->purchtable->setSelectionMode(QAbstractItemView::NoSelection);
-    ui->purchtable->setTextElideMode(Qt::ElideNone);
-    ui->purchtable->verticalHeader()->setDefaultSectionSize(45);
-    ui->purchtable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    ui->purchtable->setShowGrid(false);
-    ui->purchtable->setFocusPolicy(Qt::NoFocus);
-    ui->purchtable->setFrameShape(QFrame::NoFrame);
-    ui->purchtable->horizontalHeader()->setDefaultAlignment(Qt::AlignCenter);
-
 
     connect(ui->purchsearch, &QLineEdit::returnPressed,
             this, [this, ui]() {
@@ -89,28 +79,26 @@ purchaseswindow::purchaseswindow(Ui::MainWindow *ui)
 
                     Medicine m = Medicine::getById(id);
                     item.purchasePrice = 0;
-                    item.salePrice = m.getSalePrice(); // مهم
+                    item.salePrice = m.getSalePrice();
 
                     cart.insert(id, item);
                 }
 
                 // ================= UPDATE UI =================
-                loadData();           // load purchase cart
-                updateTotals();       // اجمالي الفاتورة
-                updateItemsCount();   // عدد العناصر
+                loadData();
+                updateTotals();
+                updateItemsCount();
 
                 ui->purchsearch->clear();
             });
 
     connect(ui->purchbtndone, &QPushButton::clicked, this, [=]() {
 
-        // ================= 1. الكارت فاضي =================
         if (cart.isEmpty()) {
             QMessageBox::warning(this, "Error", "الكارت فاضي");
             return;
         }
 
-        // ================= 2. التحقق من البيانات داخل الكارت =================
         for (auto it = cart.begin(); it != cart.end(); ++it)
         {
             const CartItem &item = it.value();
@@ -120,18 +108,23 @@ purchaseswindow::purchaseswindow(Ui::MainWindow *ui)
                 return;
             }
 
+            if (item.expiryDate <= QDate::currentDate()) {
+                QMessageBox::warning(this, "خطأ", "لا يمكن ادخال تاريخ اليوم او تاريخ سابق");
+                return;
+            }
+
+
             if (item.qty <= 0) {
                 QMessageBox::warning(this, "خطأ", "الكمية لا يمكن أن تكون صفر");
                 return;
             }
 
-            if (item.purchasePrice < 0) {
+            if (item.purchasePrice <= 0) {
                 QMessageBox::warning(this, "خطأ", "سعر الشراء غير صحيح");
                 return;
             }
         }
 
-        // ================= 3. التحقق من المورد =================
         QString supplier = ui->purchvaluesupplier->text().trimmed();
 
         if (supplier.isEmpty()) {
@@ -139,11 +132,9 @@ purchaseswindow::purchaseswindow(Ui::MainWindow *ui)
             return;
         }
 
-        // ================= 4. الدفع والتاريخ =================
         QString payment = getPaymentMethod();
         QString date = QDate::currentDate().toString("yyyy-MM-dd");
 
-        // ================= 5. حفظ الفاتورة =================
         int invoiceId = Purchases::saveInvoice(
             invoiceNumber,
             date,
@@ -163,7 +154,8 @@ purchaseswindow::purchaseswindow(Ui::MainWindow *ui)
         invoiceStarted = false;
         invoiceNumber.clear();
         loadData();
-        loadDatainvoice();
+        homeCtrl->loadDatainvoice();
+        mainWindow->loadDataStock();
 
         // ================= 6. تنظيف النظام =================
         ui->purchvalueinv->setText("0");
@@ -201,12 +193,24 @@ purchaseswindow::purchaseswindow(Ui::MainWindow *ui)
             ui->purchbtnvisa->setIcon(QIcon("D:/Project_C++/PharmacyApp/icons/credit-card4.svg"));
     });
 
+    connect(ui->purchbtncancel, &QPushButton::clicked,
+            this, [=]() {
+                cart.clear();
+                invoiceStarted = false;
+                invoiceNumber.clear();
+                loadData();
+                ui->purchvalueinv->setText("0");
+                ui->purchvaluereturn->setText("0");
+                ui->purchvaluesupplier->clear();
+                updateTotals();
+                updateItemsCount();
+            });
+
     ui->purchwidgetdate->setVisible(false);
     ui->purchwidgetnum->setVisible(false);
 
     refreshCompleter(isReturnMode);
     loadData();
-    loadDatainvoice();
 }
 
 
@@ -260,38 +264,20 @@ void purchaseswindow::refreshCompleter(bool mode)
 {
     QStringList suggestions;
 
-    if(!mode) // Sale mode
+    QList<Medicine> meds = Medicine::getAll();
+
+    for(int i = 0; i < meds.size(); i++)
     {
-        QList<Medicine> meds = Medicine::getAll();
-
-        for(int i = 0; i < meds.size(); i++)
-        {
-            suggestions << meds[i].getName();
-            suggestions << meds[i].getBarcode();
-        }
+        suggestions << meds[i].getName();
+        suggestions << meds[i].getBarcode();
     }
-    // else // Return mode
-    // {
-    //     QList<Action> a = Action::getAll();
 
-    //     for(int i = 0; i < a.size(); i++)
-    //     {
-    //         if(a[i].getInvoiceNumber().contains("INV")) // fix القوس
-    //         {
-    //             suggestions << a[i].getInvoiceNumber();
-    //         }
-    //     }
-    // }
-
-    // 🔥 إزالة التكرار + ترتيب
     suggestions.removeDuplicates();
     suggestions.sort(Qt::CaseInsensitive);
 
-    // 🔥 امسح القديم لو موجود (مهم جدًا)
     if(ui->purchsearch->completer())
         delete ui->purchsearch->completer();
 
-    // 🔥 إنشاء completer جديد
     QCompleter *completer = new QCompleter(suggestions, this);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     completer->setFilterMode(Qt::MatchContains);
@@ -642,9 +628,6 @@ QPushButton:hover {
                 loadData();
             }
         });
-
-        // ================= STYLING =================
-
         row++;
     }
 
@@ -652,150 +635,8 @@ QPushButton:hover {
 
     auto header = ui->purchcart->horizontalHeader();
     header->setSectionResizeMode(QHeaderView::Stretch);
-    // header->setSectionResizeMode(6, QHeaderView::Fixed);
-    // ui->purchcart->setColumnWidth(6, 50);
     header->setSectionResizeMode(3, QHeaderView::Fixed);
     ui->purchcart->setColumnWidth(3, 120);
-}
-
-void purchaseswindow::loadDatainvoice()
-{
-
-    model2->removeRows(0, model2->rowCount());
-
-    model2->setColumnCount(7);
-
-    model2->setHorizontalHeaderLabels({
-        "رقم الفاتورة",
-        "المورد",
-        "النوع",
-        "التاريخ",
-        "الإجمالي",
-        "الدفع",
-        "الإجراءات"
-    });
-
-    QColor gray(107,114,128);
-    QColor dark(17,24,39);
-    QColor teal(20,184,166);
-
-    QColor green(34,197,94);
-    QColor yellow(234,179,8);
-
-    QFont normalFont("Segoe UI", 10);
-    QFont boldFont("Segoe UI", 10, QFont::Bold);
-
-    QList<Purchases> list = Purchases::getAll();
-    // qDebug() << "Invoices count:" << list.size();
-
-    for(int row = 0; row < list.size(); row++)
-    {
-        const Purchases &p = list[row];
-
-        auto *no    = new QStandardItem(p.getInvoiceNumber());
-        auto *sup   = new QStandardItem(p.getSupplier());
-        auto *type  = new QStandardItem(p.getType());
-        auto *date  = new QStandardItem(p.getDate());
-        auto *total = new QStandardItem(QString::number(p.getTotal()));
-        auto *pay   = new QStandardItem(p.getPaymentMethod());
-        auto *empty = new QStandardItem("");
-
-        QList<QStandardItem*> items = {
-            no, sup, type, date, total, pay, empty
-        };
-
-        model2->appendRow(items);
-
-        // ================= تنسيق =================
-        for (int i = 0; i < items.size(); i++)
-        {
-            QStandardItem *item = items[i];
-            item->setTextAlignment(Qt::AlignCenter);
-            item->setForeground(gray);
-            item->setFont(normalFont);
-        }
-
-        no->setForeground(dark);
-        total->setForeground(teal);
-        total->setFont(boldFont);
-
-        QColor color;
-
-        if (p.getType() == "شراء") color = green;
-        else  color = yellow;
-
-        type->setForeground(color);
-
-        // ================= Buttons =================
-        QWidget *widget = new QWidget();
-        QHBoxLayout *layout = new QHBoxLayout(widget);
-
-        QPushButton *deleteBtn = new QPushButton();
-        QPushButton *actionBtn  = new QPushButton();
-
-        deleteBtn->setIcon(QIcon("D:/Project_C++/PharmacyApp/icons/trash.svg"));
-
-        if(p.getType() == "شراء")
-        {
-            actionBtn->setIcon(QIcon("D:/Project_C++/PharmacyApp/icons/refresh3.svg"));
-            actionBtn->setIconSize(QSize(16,16));
-        }
-        else
-        {
-            actionBtn->setIcon(QIcon("D:/Project_C++/PharmacyApp/icons/eye.svg"));
-            actionBtn->setIconSize(QSize(18,18));
-        }
-
-        deleteBtn->setIconSize(QSize(16,16));
-
-        deleteBtn->setFixedSize(28,28);
-        actionBtn->setFixedSize(28,28);
-
-        actionBtn->setCursor(Qt::PointingHandCursor);
-        deleteBtn->setCursor(Qt::PointingHandCursor);
-
-        layout->addWidget(actionBtn);
-        layout->addWidget(deleteBtn);
-        layout->setContentsMargins(0,0,0,0);
-        layout->setAlignment(Qt::AlignCenter);
-
-        ui->purchtable->setIndexWidget(model2->index(row, 6), widget);
-
-        int invoiceId = p.getId();
-
-        // ================= DELETE =================
-        connect(deleteBtn, &QPushButton::clicked, this, [=](){
-
-            if(QMessageBox::question(this,"تأكيد","حذف الفاتورة؟")
-                == QMessageBox::Yes)
-            {
-                Purchases::deleteInvoice(invoiceId);
-                loadDatainvoice();
-            }
-        });
-
-        // ================= ACTION =================
-        connect(actionBtn, &QPushButton::clicked, this, [=](){
-
-            if(p.getType() == "شراء")
-            {
-                QMessageBox::information(this,"Return","تحويل لمرتجع");
-            }
-            else
-            {
-                QMessageBox::information(this,"View","عرض المرتجع");
-            }
-        });
-    }
-
-        ui->purchcart->viewport()->update();
-
-        auto header = ui->purchtable->horizontalHeader();
-        header->setSectionResizeMode(QHeaderView::Stretch);
-        // header->setSectionResizeMode(6, QHeaderView::Fixed);
-        // ui->purchcart->setColumnWidth(6, 50);
-        header->setSectionResizeMode(3, QHeaderView::Fixed);
-        ui->purchtable->setColumnWidth(3, 120);
 }
 
 purchaseswindow::~purchaseswindow()

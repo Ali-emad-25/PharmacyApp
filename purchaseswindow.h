@@ -16,7 +16,10 @@
 #include <qcombobox.h>
 #include <QDateEdit>
 
+#include "homewindow.h"
 #include "purchases.h"
+
+class MainWindow;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -27,7 +30,7 @@ class purchaseswindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit purchaseswindow(Ui::MainWindow *ui);
+    explicit purchaseswindow(Ui::MainWindow *ui, homewindow *homeCtrl, MainWindow *mw);
     ~purchaseswindow();
 
     void refreshCompleter(bool mode);
@@ -41,7 +44,8 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    // homewindow *homeCtrl;
+    homewindow *homeCtrl;
+    MainWindow *mainWindow;
 
     QStandardItemModel *model;
     QStandardItemModel *model2;

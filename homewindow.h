@@ -30,12 +30,18 @@ public:
     QString searchText;
 
     void loadData();
+    void loadDatainvoice();
+    void getTodayNetSales();
+    void getTodayReturns();
+    void updateDashboard();
 
 private:
     Ui::MainWindow *ui;
 
     QStandardItemModel *model;
+    QStandardItemModel *model2;
     QButtonGroup *payGroup;
+    QButtonGroup *payGroup2;
     QButtonGroup *filterGroup;
 
     void updateStats();

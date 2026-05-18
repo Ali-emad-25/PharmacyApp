@@ -82,6 +82,159 @@ QList<PurchaseItem> PurchaseItem::getAll()
     return list;
 }
 
+QList<PurchaseItem> PurchaseItem::filter(BatchFilter filter)
+{
+    QList<PurchaseItem> list;
+
+    QSqlQuery q(Database::instance());
+
+    QString query;
+
+    if (filter == ALL)
+    {
+        query = R"(
+            SELECT
+                pi.id,
+                pi.purchase_id,
+                pi.medicine_id,
+                m.name,
+                pi.quantity,
+                pi.returned_qty,
+                pi.purchase_price,
+                pi.expiry_date,
+                pi.total,
+                p.invoice_number,
+                pi.used_qty
+            FROM purchase_items pi
+            JOIN medicines m ON m.id = pi.medicine_id
+            JOIN purchase_invoices p ON p.id = pi.purchase_id
+        )";
+    }
+
+    else if (filter == LOW_STOCK)
+    {
+        query = R"(
+            SELECT
+                pi.id,
+                pi.purchase_id,
+                pi.medicine_id,
+                m.name,
+                pi.quantity,
+                pi.returned_qty,
+                pi.purchase_price,
+                pi.expiry_date,
+                pi.total,
+                p.invoice_number,
+                pi.used_qty
+            FROM purchase_items pi
+            JOIN medicines m ON m.id = pi.medicine_id
+            JOIN purchase_invoices p ON p.id = pi.purchase_id
+            WHERE (pi.quantity - pi.used_qty - pi.returned_qty) <= m.min_quantity
+              AND DATE(pi.expiry_date) > DATE('now')
+        )";
+    }
+
+    else if (filter == EXPIRED)
+    {
+        query = R"(
+            SELECT
+                pi.id,
+                pi.purchase_id,
+                pi.medicine_id,
+                m.name,
+                pi.quantity,
+                pi.returned_qty,
+                pi.purchase_price,
+                pi.expiry_date,
+                pi.total,
+                p.invoice_number,
+                pi.used_qty
+            FROM purchase_items pi
+            JOIN medicines m ON m.id = pi.medicine_id
+            JOIN purchase_invoices p ON p.id = pi.purchase_id
+            WHERE DATE(pi.expiry_date) <= DATE('now')
+        )";
+    }
+
+    if (!q.exec(query))
+    {
+        qDebug() << "Batch Filter Error:" << q.lastError().text();
+        return {};
+    }
+
+    while (q.next())
+    {
+        list.append(PurchaseItem(
+            q.value(0).toInt(),
+            q.value(1).toInt(),
+            q.value(2).toInt(),
+            q.value(3).toString(),
+            q.value(4).toInt(),
+            q.value(5).toInt(),
+            q.value(6).toDouble(),
+            q.value(7).toString(),
+            q.value(8).toDouble(),
+            q.value(9).toString(),
+            q.value(10).toInt()
+            ));
+    }
+
+    return list;
+}
+
+int PurchaseItem::countLowStockMedicines()
+{
+    QSqlQuery q(Database::instance());
+
+    q.prepare(R"(
+        SELECT COUNT(DISTINCT pi.medicine_id)
+        FROM purchase_items pi
+        JOIN medicines m ON m.id = pi.medicine_id
+        WHERE (pi.quantity - pi.used_qty - pi.returned_qty) <= m.min_quantity
+          AND DATE(pi.expiry_date) > DATE('now')
+    )");
+
+    if (!q.exec() || !q.next())
+        return 0;
+
+    return q.value(0).toInt();
+}
+
+int PurchaseItem::countExpiredBatches()
+{
+    QSqlQuery q(Database::instance());
+
+    q.prepare(R"(
+        SELECT COUNT(*)
+        FROM purchase_items
+        WHERE DATE(expiry_date) <= DATE('now')
+    )");
+
+    if (!q.exec() || !q.next())
+        return 0;
+
+    return q.value(0).toInt();
+}
+
+int PurchaseItem::getAvailableQtyByMedicine(int medicineId)
+{
+    QSqlQuery q(Database::instance());
+
+    q.prepare(R"(
+        SELECT SUM(quantity - used_qty)
+        FROM purchase_items
+        WHERE medicine_id = ?
+          AND DATE(expiry_date) > DATE('now')
+    )");
+
+    q.addBindValue(medicineId);
+
+    if (!q.exec() || !q.next())
+        return 0;
+
+    return q.value(0).toInt();
+}
+
 int PurchaseItem::getAvailableQty() const
 {
     return quantity - usedQty - returnedQty;
